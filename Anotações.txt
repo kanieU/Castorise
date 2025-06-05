@@ -1,0 +1,11 @@
+fonte criada (amarela): class= texto1
+
+cores: 
+
+preto 2F2D3B
+laranja F78806
+
+css adcionados por mim em
+css/style.css
+
+dropdown(menu) class menusizn
