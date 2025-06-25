@@ -6652,7 +6652,7 @@ button.bg-dark:focus {
 .dropdown-child {
   position: absolute;
   top: 100%;
-  left: 0;
+  right: 0;
   opacity: 0;
   transform: translateY(-10px);
   visibility: hidden;
