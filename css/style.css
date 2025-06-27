@@ -75,7 +75,7 @@ h1, h2, h3, h4, h5, h6 {
 .palavra-animada {
   display: inline-block;
   position: relative;
-  width: 160px; /* ajuste conforme o comprimento da maior palavra */
+  min-width: max-content;
   height: 1em;
   overflow: hidden;
 }
