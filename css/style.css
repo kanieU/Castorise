@@ -3426,6 +3426,12 @@ input[type="button"].btn-block {
   display: block; }
 
 .navbar {
+ /* Animação suave para o menu */
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: navbarFadeIn 1s ease forwards;
+  animation-delay: 0.5s; /* atraso de 0.5s após carregamento */
+
   position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
