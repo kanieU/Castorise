@@ -65,7 +65,18 @@
 		          		<span class="subheading"> You’re in the right place — welcome!</span>
 			            <h1 class="mb-4 mt-3">We're a<span> system development</span> startup</h1>
 			            <p><a href="https://linktr.ee/Castorise" class="btn btn-primary py-3 px-4">Linktree</a> <a href="https://www.lartdigital.com.br" class="btn btn-white btn-outline-white py-3 px-4">Partners</a></p>
-		            </div>
+		           	  
+<script>
+  const palavras = document.querySelectorAll('.palavra-animada .palavra');
+  let i = 0;
+
+  setInterval(() => {
+    palavras[i].classList.remove('ativa');
+    i = (i + 1) % palavras.length;
+    palavras[i].classList.add('ativa');
+  }, 3000); // troca a cada 3 segundos
+</script>
+				</div>
 		          </div>
 	        	</div>
 	        </div>
