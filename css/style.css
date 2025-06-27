@@ -72,35 +72,39 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
   margin-bottom: 0.5rem; }
 
-.palavra-animada {
-  display: inline-block;
-  position: relative;
-  min-height: 1.8em;
-  line-height: 1.2;
-  vertical-align: bottom;
-  overflow: hidden;
-}
-
-.palavra-animada .palavra {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  color: #F78806;
-  transition: opacity 1s ease;
-  line-height: 1.2;
-}
-
-.palavra-animada .ativa {
-  opacity: 1;
-  animation: fadeLoop 9s infinite;
-}
-
-/* Animação loop entre as palavras */
-@keyframes fadeLoop {
-  0%, 25% { opacity: 1; }
-  33%, 100% { opacity: 0; }
-}
+.texto-animado {
+    display: inline-block;
+    position: relative;
+    width: 200px;
+    height: 1em;
+  }
+  
+  .texto-animado span {
+    position: absolute;
+    opacity: 0;
+    animation: fade 6s linear infinite;
+    color: #F78806;
+  }
+  
+  /* 3 palavras → 6s total → cada uma 2s */
+  .texto-animado span:nth-child(1) {
+    animation-delay: 0s;
+  }
+  .texto-animado span:nth-child(2) {
+    animation-delay: 2s;
+  }
+  .texto-animado span:nth-child(3) {
+    animation-delay: 4s;
+  }
+  
+  @keyframes fade {
+    0%   { opacity: 0; }
+    8%   { opacity: 1; }
+    25%  { opacity: 1; }
+    33%  { opacity: 0; }
+    100% { opacity: 0; }
+  }
+  
 
 
 p {
