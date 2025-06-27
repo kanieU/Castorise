@@ -93,7 +93,17 @@
 	      </div>
 	    </div>
     </section>
+	  
+<script>
+  const palavras = document.querySelectorAll('.palavra-animada .palavra');
+  let i = 0;
 
+  setInterval(() => {
+    palavras[i].classList.remove('ativa');
+    i = (i + 1) % palavras.length;
+    palavras[i].classList.add('ativa');
+  }, 3000); // troca a cada 3 segundos
+</script>
     <section class="ftco-about img ftco-section ftco-no-pb" id="about-section">
     	<div class="container">
     		<div class="row d-flex">
