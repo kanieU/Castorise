@@ -67,3 +67,31 @@ function animate() {
   controls.update();
   renderer.render(scene, camera);
 }
+
+// Input de imagem do usuário
+document.getElementById('myFile').addEventListener('change', function (event) {
+  const file = event.target.files[0];
+  if (!file || !loadedModel) return;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const img = new Image();
+    img.onload = function () {
+      const texture = new THREE.Texture(img);
+      texture.needsUpdate = true;
+
+      // Aplica a textura em todas as partes do modelo que suportam map
+      loadedModel.traverse((child) => {
+        if (child.isMesh) {
+          if (child.material.map) {
+            child.material.map.dispose();
+          }
+          child.material.map = texture;
+          child.material.needsUpdate = true;
+        }
+      });
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+});
