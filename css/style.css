@@ -40,6 +40,18 @@
   -webkit-box-sizing: border-box;
   box-sizing: border-box; }
 
+.botaothree {
+  background-color: #04AA6D; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+
 html {
   font-family: sans-serif;
   line-height: 1.15;
