@@ -31,7 +31,16 @@ scene.add(directionalLight);
 // Loader GLTF
 const gltfLoader = new GLTFLoader();
 let loadedModel = null;
-let userTexture = null; // 🔑 Nova variável para guardar a textura do usuário
+let userTexture = null; // 🔑 Guarda a textura do usuário
+
+// 🔑 Lista de modelos no carrossel
+const modelos = [
+  './assets/cartaovisita/scene.gltf', // 0
+  './assets/caneca/caneca.gltf',      // 1
+  './assets/bone/bone.gltf'           // 2
+];
+
+let modeloIndex = 0; // começa no Cartão
 
 // Função para carregar modelo
 function carregarModelo(url) {
@@ -64,7 +73,6 @@ function carregarModelo(url) {
       camera.position.set(center.x, center.y, distance * 1.5);
       camera.lookAt(center);
 
-      // 🔑 Se existir textura do usuário, aplica de novo
       if (userTexture) {
         aplicarTextura(userTexture);
       }
@@ -76,7 +84,7 @@ function carregarModelo(url) {
   );
 }
 
-// Função para aplicar textura em todas as meshes do modelo atual
+// Função para aplicar textura
 function aplicarTextura(texture) {
   if (!loadedModel) return;
 
@@ -91,22 +99,26 @@ function aplicarTextura(texture) {
   });
 }
 
-// Carrega o primeiro modelo (cartão de visita)
-carregarModelo('./assets/cartaovisita/scene.gltf');
+// Carrega o primeiro modelo (Cartão de Visita)
+carregarModelo(modelos[modeloIndex]);
 
-// Seleciona os botões ← e →
+// Botões
 const buttons = document.querySelectorAll('.botao-three');
 const prevButton = buttons[0]; // ←
 const nextButton = buttons[1]; // →
 
-// Botão → troca para caneca
+// Botão →
 nextButton.addEventListener('click', () => {
-  carregarModelo('./assets/caneca/caneca.gltf');
+  modeloIndex++;
+  if (modeloIndex >= modelos.length) modeloIndex = 0; // loop volta pro início
+  carregarModelo(modelos[modeloIndex]);
 });
 
-// Botão ← volta para cartão de visita
+// Botão ←
 prevButton.addEventListener('click', () => {
-  carregarModelo('./assets/cartaovisita/scene.gltf');
+  modeloIndex--;
+  if (modeloIndex < 0) modeloIndex = modelos.length - 1; // loop pro final
+  carregarModelo(modelos[modeloIndex]);
 });
 
 // Animação
@@ -119,7 +131,7 @@ function animate() {
   renderer.render(scene, camera);
 }
 
-// Input de imagem do usuário
+// Upload de textura
 document.getElementById('myFile').addEventListener('change', function (event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -131,9 +143,8 @@ document.getElementById('myFile').addEventListener('change', function (event) {
       const texture = new THREE.Texture(img);
       texture.needsUpdate = true;
 
-      userTexture = texture; // 🔑 Salva a textura pra ser reaplicada depois
-
-      aplicarTextura(userTexture); // Aplica no modelo atual
+      userTexture = texture; // 🔑 Salva a textura
+      aplicarTextura(userTexture);
     };
     img.src = e.target.result;
   };
