@@ -73,37 +73,25 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 0.5rem; }
 
 .texto-animado {
-    display: inline-block;
-    position: relative;
-    width: 200px;
-    height: 1em;
-  }
-  
-  .texto-animado span {
-    position: absolute;
-    opacity: 0;
-    animation: fade 6s linear infinite;
-    color: #F78806;
-  }
-  
-  /* 3 palavras → 6s total → cada uma 2s */
-  .texto-animado span:nth-child(1) {
-    animation-delay: 0s;
-  }
-  .texto-animado span:nth-child(2) {
-    animation-delay: 2s;
-  }
-  .texto-animado span:nth-child(3) {
-    animation-delay: 4s;
-  }
-  
-  @keyframes fade {
-    0%   { opacity: 0; }
-    8%   { opacity: 1; }
-    25%  { opacity: 1; }
-    33%  { opacity: 0; }
-    100% { opacity: 0; }
-  }
+  display: inline-block;
+  position: relative;
+  width: 200px; /* você pode ajustar conforme o maior texto */
+  height: 1em;
+  vertical-align: middle;
+  overflow: hidden;
+}
+
+.texto-animado .palavra {
+  position: absolute;
+  opacity: 0;
+  color: #F78806;
+  transition: opacity 0.5s ease;
+}
+
+.texto-animado .palavra.ativa {
+  opacity: 1;
+}
+
   
 
 
