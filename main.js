@@ -40,7 +40,7 @@ const modelos = [
   './assets/cartao/cartao.gltf', // cartao (arrumar modelo 3d dele flicando)
 ];
 
-let modeloIndex = 0; // começa no Cartão
+let modeloIndex = 1; // começa no Cartão
 
 // Função para carregar modelo
 function carregarModelo(url) {
