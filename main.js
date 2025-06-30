@@ -32,31 +32,53 @@ scene.add(directionalLight);
 const gltfLoader = new GLTFLoader();
 let loadedModel = null;
 
-gltfLoader.load('./assets/cartaovisita/scene.gltf',
-  (gltf) => {
-    console.log('Modelo carregado:', gltf);
-
-    loadedModel = gltf.scene;
-    scene.add(loadedModel);
-
-    // Centralizar modelo
-    const box = new THREE.Box3().setFromObject(loadedModel);
-    const size = box.getSize(new THREE.Vector3()).length();
-    const center = box.getCenter(new THREE.Vector3());
-
-    loadedModel.position.sub(center); // Centraliza
-
-    // Ajustar câmera com base no fov
-    const fov = camera.fov * (Math.PI / 180);
-    const distance = size / (2 * Math.tan(fov / 2));
-    camera.position.set(center.x, center.y, distance * 1.5);
-    camera.lookAt(center);
-  },
-  undefined,
-  (error) => {
-    console.error('Erro ao carregar o modelo:', error);
+// Função para carregar modelo
+function carregarModelo(url) {
+  if (loadedModel) {
+    scene.remove(loadedModel);
+    loadedModel.traverse((child) => {
+      if (child.isMesh) {
+        child.geometry.dispose();
+        if (child.material.map) child.material.map.dispose();
+        child.material.dispose();
+      }
+    });
+    loadedModel = null;
   }
-);
+
+  gltfLoader.load(
+    url,
+    (gltf) => {
+      loadedModel = gltf.scene;
+      scene.add(loadedModel);
+
+      const box = new THREE.Box3().setFromObject(loadedModel);
+      const size = box.getSize(new THREE.Vector3()).length();
+      const center = box.getCenter(new THREE.Vector3());
+
+      loadedModel.position.sub(center);
+
+      const fov = camera.fov * (Math.PI / 180);
+      const distance = size / (2 * Math.tan(fov / 2));
+      camera.position.set(center.x, center.y, distance * 1.5);
+      camera.lookAt(center);
+    },
+    undefined,
+    (error) => {
+      console.error('Erro ao carregar o modelo:', error);
+    }
+  );
+}
+
+// Carrega o primeiro modelo (cartão de visita)
+carregarModelo('./assets/cartaovisita/scene.gltf');
+
+// Botão para trocar para a caneca
+const buttons = document.querySelectorAll('.botao-three');
+const nextButton = buttons[1]; // botão →
+nextButton.addEventListener('click', () => {
+  carregarModelo('./assets/caneca/scene.gltf');
+});
 
 // Animação
 function animate() {
@@ -80,7 +102,6 @@ document.getElementById('myFile').addEventListener('change', function (event) {
       const texture = new THREE.Texture(img);
       texture.needsUpdate = true;
 
-      // Aplica a textura em todas as partes do modelo que suportam map
       loadedModel.traverse((child) => {
         if (child.isMesh) {
           if (child.material.map) {
