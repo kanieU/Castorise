@@ -41,14 +41,17 @@
   box-sizing: border-box; }
 
 .botaothree {
-  background-color: #04AA6D; /* Green */
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
+   position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 16px;
   font-size: 16px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 10;
 }
 
 
