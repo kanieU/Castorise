@@ -6709,7 +6709,9 @@ button.bg-dark:focus {
   background-color: transparent;
   z-index: 10;
   max-width: 100vw;      /* nunca ultrapassar a largura total da viewport */
-  overflow-x: auto; 
+  overflow-x: auto;
+  background-color: rgba(0, 0, 0, 0.8);
+  mix-blend-mode: difference;
 }
 .dropdown-child a {
   color: white;
