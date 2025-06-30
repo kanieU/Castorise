@@ -77,7 +77,7 @@ carregarModelo('./assets/cartaovisita/scene.gltf');
 const buttons = document.querySelectorAll('.botao-three');
 const nextButton = buttons[1]; // botão →
 nextButton.addEventListener('click', () => {
-  carregarModelo('./assets/caneca/scene.gltf');
+  carregarModelo('./assets/caneca/caneca.gltf');
 });
 
 // Animação
