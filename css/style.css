@@ -73,10 +73,13 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 0.5rem; }
 
 .texto-animado {
-  display: inline-block;
+  display: inline-flex;              /* Flex para alinhamento interno */
+  justify-content: center;
+  align-items: center;              /* Alinha verticalmente */
   position: relative;
-  width: 200px; /* você pode ajustar conforme o maior texto */
-  height: 1em;
+  width: 200px;                     /* Ajuste para o maior texto */
+  height: 1em;                      /* Alinha com o restante do h1 */
+  line-height: 1em;                 /* Garante altura correta */
   vertical-align: middle;
   overflow: hidden;
 }
@@ -85,7 +88,9 @@ h1, h2, h3, h4, h5, h6 {
   position: absolute;
   opacity: 0;
   color: #F78806;
+  white-space: nowrap;              /* Impede quebra de linha */
   transition: opacity 0.5s ease;
+  font-weight: bold;                /* (opcional) para combinar com "We're a" */
 }
 
 .texto-animado .palavra.ativa {
