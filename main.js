@@ -73,11 +73,19 @@ function carregarModelo(url) {
 // Carrega o primeiro modelo (cartão de visita)
 carregarModelo('./assets/cartaovisita/scene.gltf');
 
-// Botão para trocar para a caneca
+// Seleciona os botões ← e →
 const buttons = document.querySelectorAll('.botao-three');
-const nextButton = buttons[1]; // botão →
+const prevButton = buttons[0]; // ←
+const nextButton = buttons[1]; // →
+
+// Botão → troca para caneca
 nextButton.addEventListener('click', () => {
-  carregarModelo('./assets/caneca/scene.gltf');
+  carregarModelo('./assets/caneca/caneca.gltf');
+});
+
+// Botão ← volta para cartão de visita
+prevButton.addEventListener('click', () => {
+  carregarModelo('./assets/cartaovisita/scene.gltf');
 });
 
 // Animação
