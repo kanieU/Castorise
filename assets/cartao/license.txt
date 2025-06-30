@@ -1,0 +1,11 @@
+Model Information:
+* title:	Business Card
+* source:	https://sketchfab.com/3d-models/business-card-0f8dbbd84e0b481694a25b0c990a9131
+* author:	Jerome.Donato (https://sketchfab.com/Jerome.Donato)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Business Card" (https://sketchfab.com/3d-models/business-card-0f8dbbd84e0b481694a25b0c990a9131) by Jerome.Donato (https://sketchfab.com/Jerome.Donato) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
