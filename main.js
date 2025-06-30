@@ -31,6 +31,7 @@ scene.add(directionalLight);
 // Loader GLTF
 const gltfLoader = new GLTFLoader();
 let loadedModel = null;
+let userTexture = null; // 🔑 Nova variável para guardar a textura do usuário
 
 // Função para carregar modelo
 function carregarModelo(url) {
@@ -62,12 +63,32 @@ function carregarModelo(url) {
       const distance = size / (2 * Math.tan(fov / 2));
       camera.position.set(center.x, center.y, distance * 1.5);
       camera.lookAt(center);
+
+      // 🔑 Se existir textura do usuário, aplica de novo
+      if (userTexture) {
+        aplicarTextura(userTexture);
+      }
     },
     undefined,
     (error) => {
       console.error('Erro ao carregar o modelo:', error);
     }
   );
+}
+
+// Função para aplicar textura em todas as meshes do modelo atual
+function aplicarTextura(texture) {
+  if (!loadedModel) return;
+
+  loadedModel.traverse((child) => {
+    if (child.isMesh) {
+      if (child.material.map) {
+        child.material.map.dispose();
+      }
+      child.material.map = texture;
+      child.material.needsUpdate = true;
+    }
+  });
 }
 
 // Carrega o primeiro modelo (cartão de visita)
@@ -101,7 +122,7 @@ function animate() {
 // Input de imagem do usuário
 document.getElementById('myFile').addEventListener('change', function (event) {
   const file = event.target.files[0];
-  if (!file || !loadedModel) return;
+  if (!file) return;
 
   const reader = new FileReader();
   reader.onload = function (e) {
@@ -110,15 +131,9 @@ document.getElementById('myFile').addEventListener('change', function (event) {
       const texture = new THREE.Texture(img);
       texture.needsUpdate = true;
 
-      loadedModel.traverse((child) => {
-        if (child.isMesh) {
-          if (child.material.map) {
-            child.material.map.dispose();
-          }
-          child.material.map = texture;
-          child.material.needsUpdate = true;
-        }
-      });
+      userTexture = texture; // 🔑 Salva a textura pra ser reaplicada depois
+
+      aplicarTextura(userTexture); // Aplica no modelo atual
     };
     img.src = e.target.result;
   };
