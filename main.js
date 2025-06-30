@@ -35,7 +35,7 @@ let userTexture = null; // 🔑 Guarda a textura do usuário
 
 // 🔑 Lista de modelos no carrossel
 const modelos = [
-  './assets/cartaovisita/scene.gltf', // 0
+  './assets/cartaovisita/cartao.gltf', // 0
   './assets/caneca/caneca.gltf',      // 1
   './assets/bone/bone.gltf'           // 2
 ];
