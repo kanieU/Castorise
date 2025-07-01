@@ -6767,32 +6767,58 @@ button.bg-dark:focus {
 }
 
 /* ---------- BOTÃO TRADUÇÃO ---------- */
+/* ======== BOTÃO TRADUÇÃO ORIGINAL ======== */
 .btntradu {
-  display: inline-block;
-  background: #F78806; /* cor original */
-  color: #fff;
-  font-family: 'Poppins', sans-serif; /* ajuste se usar outra */
-  font-weight: 600;
-  padding: 12px 20px;
-  border-radius: 30px;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  font-size: 16px;
-  line-height: 1.2;
+  font-size: 17px;
+  background: transparent;
+  border: none;
+  padding: 1em 1.5em;
+  color: #F78806;
+  text-transform: uppercase;
+  position: relative;
+  transition: 0.5s ease;
+  cursor: pointer;
+  overflow: hidden; /* garante o after/ before animando certo */
+}
+
+.btntradu::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0;
+  background-color: #F78806;
+  transition: 0.5s ease;
 }
 
 .btntradu:hover {
-  background: #d67000;
-  color: #fff;
-  text-decoration: none;
+  color: #1e1e2b;
+  transition-delay: 0.5s;
 }
 
-/* Ajuste se quiser um leve sombra animada */
-.btntradu:hover {
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+.btntradu:hover::before {
+  width: 100%;
 }
 
-/* ---------- RESPONSIVO: troca texto por ícone ---------- */
+.btntradu::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 0;
+  width: 100%;
+  background-color: #F78806;
+  transition: 0.4s ease;
+  z-index: -1;
+}
+
+.btntradu:hover::after {
+  height: 100%;
+  transition-delay: 0.4s;
+}
+
+/* ======== MODO ÍCONE NO MOBILE ======== */
 .btntradu .icon {
   display: none;
 }
@@ -6801,19 +6827,21 @@ button.bg-dark:focus {
   .btntradu .text {
     display: none;
   }
+
   .btntradu .icon {
     display: inline;
     font-size: 20px;
-    line-height: 1;
+    vertical-align: middle;
   }
 }
 
-/* Opcional: alinhamento com o logo */
+/* Alinhar com logo, se precisar */
 .navbar-brand,
 .btntradu {
   display: inline-flex;
   align-items: center;
 }
+
 
 
 
