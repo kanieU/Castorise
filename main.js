@@ -53,13 +53,16 @@ let lastMouseY = 0;
 
 document.getElementById('toggle-carimbo').addEventListener('click', () => {
   editTextureMode = !editTextureMode;
+
   if (!editTextureMode) {
+    // Quando SAIR do modo teste, volta a girar
     rotationSpeed = 0.01;
     if (selectedDecal) {
       scene.remove(selectedDecal);
       selectedDecal = null;
     }
   }
+
   document.getElementById('toggle-carimbo').textContent = editTextureMode
     ? 'Desativar Modo teste dois'
     : 'Ativar Modo exibição';
@@ -225,13 +228,11 @@ function animate() {
     loadedModel.rotation.y += rotationSpeed;
   }
 
-  if (editTextureMode && rotationSpeed > 0) {
-    rotationSpeed -= 0.0005;
-    if (rotationSpeed < 0) rotationSpeed = 0;
-  }
-
   if (editTextureMode && loadedModel) {
-    loadedModel.rotation.y = THREE.MathUtils.lerp(loadedModel.rotation.y, 0, 0.05);
+    rotationSpeed = 0; // trava rotação imediatamente
+    // travar a rotação em zero ou mantenha o valor atual
+    // Se quiser travar em zero:
+    // loadedModel.rotation.y = 0;
   }
 
   controls.update();
