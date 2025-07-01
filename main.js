@@ -61,7 +61,7 @@ document.getElementById('toggle-carimbo').addEventListener('click', () => {
     }
   }
   document.getElementById('toggle-carimbo').textContent = editTextureMode
-    ? 'Desativar Modo teste2'
+    ? 'Desativar Modo teste dois'
     : 'Ativar Modo exibição';
 });
 
