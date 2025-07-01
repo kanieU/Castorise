@@ -9881,3 +9881,20 @@ textarea.form-control {
   100% {
     stroke-dasharray: 89, 200;
     stroke-dashoffset: -136px; } }
+
+/* 👇 cole isto no FINAL do seu style.css */
+
+.home-slider {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.home-slider .slider-item {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;  /* altura mínima de tela inteira */
+  background-size: cover;
+  background-position: center center;
+}
+
