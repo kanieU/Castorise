@@ -1,8 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { DecalGeometry } from 'three/addons/geometries/DecalGeometry.js';
-import { TransformControls } from 'three/addons/controls/TransformControls.js';
 
 const container = document.getElementById('threejs-container');
 
@@ -33,7 +31,7 @@ scene.add(directionalLight);
 const gltfLoader = new GLTFLoader();
 let loadedModel = null;
 let userTexture = null;
-let selectedDecal = null;
+let selectedPlane = null;
 
 const modelos = [
   './assets/cartao/cartao.gltf',
@@ -42,29 +40,22 @@ const modelos = [
 ];
 
 let modeloIndex = 0;
-
 let editTextureMode = false;
 let rotationSpeed = 0.01;
 
-const transformControls = new TransformControls(camera, renderer.domElement);
-scene.add(transformControls);
-
-transformControls.addEventListener('dragging-changed', function (event) {
-  controls.enabled = !event.value;
-});
+let isDragging = false;
+let lastMouseX = 0;
+let lastMouseY = 0;
 
 document.getElementById('toggle-carimbo').addEventListener('click', () => {
   editTextureMode = !editTextureMode;
-
   if (!editTextureMode) {
     rotationSpeed = 0.01;
-    transformControls.detach();
-    selectedDecal = null;
+    selectedPlane = null;
   }
-
   document.getElementById('toggle-carimbo').textContent = editTextureMode
-    ? 'Desativar Modo Mockup'
-    : 'Ativar Modo Mockup';
+    ? 'Desativar Modo Edição'
+    : 'Ativar Modo Edição';
 });
 
 function carregarModelo(url) {
@@ -126,7 +117,6 @@ document.querySelectorAll('.botao-three')[0].addEventListener('click', () => {
 document.getElementById('myFile').addEventListener('change', function (event) {
   const file = event.target.files[0];
   if (!file) return;
-
   const reader = new FileReader();
   reader.onload = function (e) {
     const loader = new THREE.TextureLoader();
@@ -137,6 +127,7 @@ document.getElementById('myFile').addEventListener('change', function (event) {
   reader.readAsDataURL(file);
 });
 
+// Clique cria um novo plano adesivo colado
 renderer.domElement.addEventListener('click', function (event) {
   if (!editTextureMode || !loadedModel || !userTexture) return;
 
@@ -155,39 +146,57 @@ renderer.domElement.addEventListener('click', function (event) {
     const position = intersect.point.clone();
     const normal = intersect.face.normal.clone().transformDirection(intersect.object.matrixWorld);
 
-    // Alinha decal para ficar "colado" na face
-    const orientation = new THREE.Euler();
-    const lookAtMatrix = new THREE.Matrix4();
-    lookAtMatrix.lookAt(new THREE.Vector3(), normal, new THREE.Vector3(0, 1, 0));
-    orientation.setFromRotationMatrix(lookAtMatrix);
-
-    // Tamanho proporcional ao objeto
     const bbox = new THREE.Box3().setFromObject(loadedModel);
-    const size = bbox.getSize(new THREE.Vector3()).length();
-    const decalSize = new THREE.Vector3(size * 0.1, size * 0.1, size * 0.1);
+    const size = bbox.getSize(new THREE.Vector3()).length;
 
-    const decalGeom = new DecalGeometry(intersect.object, position, orientation, decalSize);
+    const planeSize = size * 0.3; // maior
 
-    const decalMat = new THREE.MeshBasicMaterial({
+    const planeGeom = new THREE.PlaneGeometry(planeSize, planeSize);
+    const planeMat = new THREE.MeshBasicMaterial({
       map: userTexture,
       transparent: true,
-      depthTest: true,
-      depthWrite: false,
-      polygonOffset: true,
-      polygonOffsetFactor: -4,
     });
 
-    if (selectedDecal) {
-      selectedDecal.geometry.dispose();
-      selectedDecal.geometry = decalGeom;
-      selectedDecal.material = decalMat;
-    } else {
-      const decalMesh = new THREE.Mesh(decalGeom, decalMat);
-      intersect.object.add(decalMesh);
-      selectedDecal = decalMesh;
-    }
+    const planeMesh = new THREE.Mesh(planeGeom, planeMat);
+    planeMesh.position.copy(position).add(normal.clone().multiplyScalar(0.01));
+    planeMesh.lookAt(position.clone().add(normal));
 
-    transformControls.attach(selectedDecal);
+    scene.add(planeMesh);
+    selectedPlane = planeMesh;
+
+    // comece a arrastar imediatamente
+    isDragging = true;
+    lastMouseX = event.clientX;
+    lastMouseY = event.clientY;
+  }
+});
+
+// Arrasta o adesivo com mouse
+renderer.domElement.addEventListener('mousemove', function (event) {
+  if (editTextureMode && isDragging && selectedPlane) {
+    const dx = event.clientX - lastMouseX;
+    const dy = event.clientY - lastMouseY;
+
+    const movementScale = 0.001;
+
+    selectedPlane.position.x += dx * movementScale;
+    selectedPlane.position.y -= dy * movementScale;
+
+    lastMouseX = event.clientX;
+    lastMouseY = event.clientY;
+  }
+});
+
+// Para de arrastar
+renderer.domElement.addEventListener('mouseup', function () {
+  isDragging = false;
+});
+
+// Scroll aumenta/diminui
+renderer.domElement.addEventListener('wheel', function (event) {
+  if (editTextureMode && selectedPlane) {
+    const delta = event.deltaY < 0 ? 1.1 : 0.9;
+    selectedPlane.scale.multiplyScalar(delta);
   }
 });
 
