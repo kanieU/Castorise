@@ -6766,76 +6766,55 @@ button.bg-dark:focus {
   visibility: visible;
 }
 
-/* EUQUEFIZ botao da tradução   */
+/* ---------- BOTÃO TRADUÇÃO ---------- */
+.btntradu {
+  display: inline-block;
+  background: #F78806; /* cor original */
+  color: #fff;
+  font-family: 'Poppins', sans-serif; /* ajuste se usar outra */
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.btntradu:hover {
+  background: #d67000;
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Ajuste se quiser um leve sombra animada */
+.btntradu:hover {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* ---------- RESPONSIVO: troca texto por ícone ---------- */
+.btntradu .icon {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .btntradu .text {
+    display: none;
+  }
+  .btntradu .icon {
+    display: inline;
+    font-size: 20px;
+    line-height: 1;
+  }
+}
+
+/* Opcional: alinhamento com o logo */
 .navbar-brand,
 .btntradu {
   display: inline-flex;
   align-items: center;
 }
 
-.btntradu {
-  margin-left: 10px;
-  color: #F78806; /* cor de destaque */
-  font-weight: bold;
-  font-size: 17px;
-  background: transparent;
-  border: none;
-  padding: 1em 1.5em;
-  color: #F78806;
-  text-transform: uppercase;
-  position: relative;
-  transition: 0.5s ease;
-  cursor: pointer;
-}
-.btntradu .icon {
-  display: none;
-}
-@media (max-width: 768px) {
-  .btntradu .text {
-    display: none;
-  }
-   .btntradu .icon {
-    display: inline;
-    font-size: 20px; /* ajuste o tamanho do ícone */
-  }
-.btntradu::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 2px;
-  width: 0;
-  background-color: #F78806;
-  transition: 0.5s ease;
-}
-.btntradu:hover {
-  color: #1e1e2b;
-  transition-delay: 0.5s;
-}
-
-.btntradu:hover::before {
-  width: 100%;
-}
-
-.btntradu::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 0;
-  width: 100%;
-  background-color: #F78806;
-  transition: 0.4s ease;
-  z-index: -1;
-}
-
-.btntradu:hover::after {
-  height: 100%;
-  transition-delay: 0.4s;
-  color: aliceblue;
-}
-
-/**/
 
 
 .mt-4,
