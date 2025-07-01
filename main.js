@@ -54,8 +54,8 @@ document.getElementById('toggle-carimbo').addEventListener('click', () => {
     selectedPlane = null;
   }
   document.getElementById('toggle-carimbo').textContent = editTextureMode
-    ? 'Desativar Modo carimbo'
-    : 'Ativar Modo Mockup';
+    ? 'Desativar Modo teste'
+    : 'Ativar Modo exibição';
 });
 
 function carregarModelo(url) {
@@ -122,14 +122,24 @@ document.getElementById('myFile').addEventListener('change', function (event) {
     const loader = new THREE.TextureLoader();
     loader.load(e.target.result, function (texture) {
       userTexture = texture;
+      userTexture.needsUpdate = true; // 🔑 Importante!
+      console.log('Texture loaded:', userTexture);
     });
   };
   reader.readAsDataURL(file);
 });
 
-// Clique cria o adesivo
+// Clique para criar adesivo
 renderer.domElement.addEventListener('click', function (event) {
-  if (!editTextureMode || !loadedModel || !userTexture) return;
+  if (!editTextureMode || !loadedModel || !userTexture) {
+    console.log('No texture or model.');
+    return;
+  }
+
+  if (!userTexture.image) {
+    console.log('Texture has no image yet.');
+    return;
+  }
 
   const mouse = new THREE.Vector2(
     (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
@@ -149,35 +159,38 @@ renderer.domElement.addEventListener('click', function (event) {
     const bbox = new THREE.Box3().setFromObject(loadedModel);
     const size = bbox.getSize(new THREE.Vector3()).length;
 
-    const planeSize = size * 0.4; // 🔑 Tamanho maior
+    const planeSize = size * 0.4; // 🔑 Tamanho maior!
 
     const planeGeom = new THREE.PlaneGeometry(planeSize, planeSize);
     const planeMat = new THREE.MeshBasicMaterial({
       map: userTexture,
       transparent: true,
-      side: THREE.DoubleSide,      // ✅ Renderiza os 2 lados
-      depthTest: true,
+      side: THREE.DoubleSide,
+      depthTest: true
     });
 
     const planeMesh = new THREE.Mesh(planeGeom, planeMat);
 
-    // 🔑 Offset maior pra não afundar
-    planeMesh.position.copy(position).add(normal.clone().multiplyScalar(0.02));
+    // 🔑 Offset pra não sumir
+    planeMesh.position.copy(position).add(normal.clone().multiplyScalar(0.05));
 
-    // 🔑 Virado pra fora
-    const target = position.clone().add(normal);
-    planeMesh.lookAt(target);
+    // 🔑 Orientação certa
+    planeMesh.lookAt(position.clone().add(normal));
 
     scene.add(planeMesh);
-    selectedPlane = planeMesh;
 
+    console.log('Plane created:', planeMesh);
+
+    selectedPlane = planeMesh;
     isDragging = true;
     lastMouseX = event.clientX;
     lastMouseY = event.clientY;
+  } else {
+    console.log('No intersection.');
   }
 });
 
-// Arrastar com mouse
+// Drag com mouse
 renderer.domElement.addEventListener('mousemove', function (event) {
   if (editTextureMode && isDragging && selectedPlane) {
     const dx = event.clientX - lastMouseX;
@@ -197,7 +210,7 @@ renderer.domElement.addEventListener('mouseup', function () {
   isDragging = false;
 });
 
-// Scroll ajusta tamanho
+// Scroll pra escalar
 renderer.domElement.addEventListener('wheel', function (event) {
   if (editTextureMode && selectedPlane) {
     const delta = event.deltaY < 0 ? 1.1 : 0.9;
