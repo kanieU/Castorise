@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DecalGeometry } from 'three/addons/geometries/DecalGeometry.js';
+import { TransformControls } from 'three/addons/controls/TransformControls.js';
 
 const container = document.getElementById('threejs-container');
 
@@ -22,6 +23,7 @@ renderer.setAnimationLoop(animate);
 container.appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
 
 scene.add(new THREE.AmbientLight(0xffffff, 0.5));
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
@@ -31,6 +33,7 @@ scene.add(directionalLight);
 const gltfLoader = new GLTFLoader();
 let loadedModel = null;
 let userTexture = null;
+let selectedDecal = null;
 
 const modelos = [
   './assets/cartao/cartao.gltf',
@@ -41,17 +44,24 @@ const modelos = [
 let modeloIndex = 0;
 
 let editTextureMode = false;
+let rotationSpeed = 0.01; // velocidade de rotação
 
-let rotationSpeed = 0.01; // ✅ NOVO: velocidade da rotação
+const transformControls = new TransformControls(camera, renderer.domElement);
+scene.add(transformControls);
+
+// Bloqueia OrbitControls enquanto usa TransformControls
+transformControls.addEventListener('dragging-changed', function (event) {
+  controls.enabled = !event.value;
+});
 
 document.getElementById('toggle-carimbo').addEventListener('click', () => {
   editTextureMode = !editTextureMode;
 
-  // ✅ Ao ativar, comece a desacelerar
-  if (editTextureMode) {
-    // rotação vai parar suavemente
-  } else {
-    rotationSpeed = 0.01; // quando desativar, volta a rodar
+  // Quando ativa: desacelera suavemente
+  if (!editTextureMode) {
+    rotationSpeed = 0.01; // volta a girar quando sair do modo mockup
+    transformControls.detach(); // solta o gizmo
+    selectedDecal = null;
   }
 
   document.getElementById('toggle-carimbo').textContent = editTextureMode
@@ -115,7 +125,7 @@ document.querySelectorAll('.botao-three')[0].addEventListener('click', () => {
   carregarModelo(modelos[modeloIndex]);
 });
 
-// Upload
+// Upload da textura
 document.getElementById('myFile').addEventListener('change', function (event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -130,7 +140,7 @@ document.getElementById('myFile').addEventListener('change', function (event) {
   reader.readAsDataURL(file);
 });
 
-// Mockup Decalque ao clicar no objeto
+// Criar Decal + anexar TransformControls
 renderer.domElement.addEventListener('click', function (event) {
   if (!editTextureMode || !loadedModel || !userTexture) return;
 
@@ -167,8 +177,10 @@ renderer.domElement.addEventListener('click', function (event) {
 
     const decalMesh = new THREE.Mesh(decalGeom, decalMat);
 
-    // ✅ NOVO: grude o decal no objeto
     intersect.object.add(decalMesh);
+
+    selectedDecal = decalMesh;
+    transformControls.attach(selectedDecal);
   }
 });
 
@@ -178,8 +190,12 @@ function animate() {
   }
 
   if (editTextureMode && rotationSpeed > 0) {
-    rotationSpeed -= 0.0005; // desaceleração suave
+    rotationSpeed -= 0.0005;
     if (rotationSpeed < 0) rotationSpeed = 0;
+  }
+
+  if (editTextureMode && loadedModel) {
+    loadedModel.rotation.y = THREE.MathUtils.lerp(loadedModel.rotation.y, 0, 0.05);
   }
 
   controls.update();
