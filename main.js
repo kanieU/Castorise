@@ -42,12 +42,16 @@ let modeloIndex = 0;
 
 let editTextureMode = false;
 
+let rotationSpeed = 0.01; // ✅ NOVO: velocidade da rotação
+
 document.getElementById('toggle-carimbo').addEventListener('click', () => {
   editTextureMode = !editTextureMode;
 
-  // 🔑 NOVO: zera rotação quando entra no modo carimbo
-  if (editTextureMode && loadedModel) {
-    loadedModel.rotation.y = 0;
+  // ✅ Ao ativar, comece a desacelerar
+  if (editTextureMode) {
+    // rotação vai parar suavemente
+  } else {
+    rotationSpeed = 0.01; // quando desativar, volta a rodar
   }
 
   document.getElementById('toggle-carimbo').textContent = editTextureMode
@@ -162,14 +166,22 @@ renderer.domElement.addEventListener('click', function (event) {
     });
 
     const decalMesh = new THREE.Mesh(decalGeom, decalMat);
-    scene.add(decalMesh);
+
+    // ✅ NOVO: grude o decal no objeto
+    intersect.object.add(decalMesh);
   }
 });
 
 function animate() {
   if (loadedModel && !editTextureMode) {
-    loadedModel.rotation.y += 0.01;
+    loadedModel.rotation.y += rotationSpeed;
   }
+
+  if (editTextureMode && rotationSpeed > 0) {
+    rotationSpeed -= 0.0005; // desaceleração suave
+    if (rotationSpeed < 0) rotationSpeed = 0;
+  }
+
   controls.update();
   renderer.render(scene, camera);
 }
