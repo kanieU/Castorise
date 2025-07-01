@@ -8592,7 +8592,9 @@ h1, h2, h3, h4, h5,
       display: none; } }
 
 ..home-slider {
-  position: relative; }
+  position: relative
+  display: block;
+  width: 100%; }
   ..home-slider .owl-item {
     opacity: .4; }
     ..home-slider .owl-item.active {
