@@ -44,6 +44,12 @@ let editTextureMode = false;
 
 document.getElementById('toggle-carimbo').addEventListener('click', () => {
   editTextureMode = !editTextureMode;
+
+  // 🔑 NOVO: zera rotação quando entra no modo carimbo
+  if (editTextureMode && loadedModel) {
+    loadedModel.rotation.y = 0;
+  }
+
   document.getElementById('toggle-carimbo').textContent = editTextureMode
     ? 'Desativar Modo Mockup'
     : 'Ativar Modo Mockup';
