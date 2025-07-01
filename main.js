@@ -8,7 +8,12 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xffffff);
 
 // Câmera
-const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.01, 1000);
+const camera = new THREE.PerspectiveCamera(
+  75,
+  container.clientWidth / container.clientHeight,
+  0.01,
+  1000
+);
 camera.position.z = 0.2;
 
 // Renderizador
@@ -39,15 +44,22 @@ const modelos = [
 
 let modeloIndex = 0;
 
-// Carrega modelo
+// Função para carregar o modelo
 function carregarModelo(url) {
   if (loadedModel) {
     scene.remove(loadedModel);
     loadedModel.traverse((child) => {
       if (child.isMesh) {
         child.geometry.dispose();
-        if (child.material.map) child.material.map.dispose();
-        child.material.dispose();
+        if (Array.isArray(child.material)) {
+          child.material.forEach((mat) => {
+            if (mat.map) mat.map.dispose();
+            mat.dispose();
+          });
+        } else {
+          if (child.material.map) child.material.map.dispose();
+          child.material.dispose();
+        }
       }
     });
     loadedModel = null;
@@ -77,7 +89,7 @@ function carregarModelo(url) {
   );
 }
 
-// Nova função aplicar textura com carimbo
+// Função para aplicar textura (com suporte multi-material)
 function aplicarTextura(texture) {
   if (!loadedModel) return;
 
@@ -92,13 +104,19 @@ function aplicarTextura(texture) {
     parseFloat(document.getElementById('offsetX').value) || 0,
     parseFloat(document.getElementById('offsetY').value) || 0
   );
-
   texture.needsUpdate = true;
 
   loadedModel.traverse((child) => {
     if (child.isMesh) {
-      child.material.map = texture;
-      child.material.needsUpdate = true;
+      if (Array.isArray(child.material)) {
+        child.material.forEach((mat) => {
+          mat.map = texture;
+          mat.needsUpdate = true;
+        });
+      } else {
+        child.material.map = texture;
+        child.material.needsUpdate = true;
+      }
     }
   });
 }
@@ -116,26 +134,27 @@ document.querySelectorAll('.botao-three')[0].addEventListener('click', () => {
   carregarModelo(modelos[modeloIndex]);
 });
 
-// Upload
+// Upload de textura usando TextureLoader (seguro!)
 document.getElementById('myFile').addEventListener('change', function (event) {
   const file = event.target.files[0];
   if (!file) return;
 
   const reader = new FileReader();
   reader.onload = function (e) {
-    const img = new Image();
-    img.onload = function () {
-      const texture = new THREE.Texture(img);
+    const loader = new THREE.TextureLoader();
+    loader.load(e.target.result, function (texture) {
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+
       userTexture = texture;
       aplicarTextura(texture);
-    };
-    img.src = e.target.result;
+    });
   };
   reader.readAsDataURL(file);
 });
 
-// Sliders para ajuste do carimbo
-['repeatX', 'repeatY', 'offsetX', 'offsetY'].forEach(id => {
+// Sliders para ajuste dinâmico
+['repeatX', 'repeatY', 'offsetX', 'offsetY'].forEach((id) => {
   document.getElementById(id).addEventListener('input', () => {
     if (userTexture) aplicarTextura(userTexture);
   });
