@@ -89,7 +89,7 @@ document.getElementById('toggle-carimbo').addEventListener('click', () => {
     : 'Ativar Modo Carimbo';
 });
 
-// Função para carregar o modelo
+// Função para carregar o modelo (corrigida)
 function carregarModelo(url) {
   if (loadedModel) {
     scene.remove(loadedModel);
@@ -127,6 +127,9 @@ function carregarModelo(url) {
       camera.position.set(center.x, center.y, distance * 1.5);
       camera.lookAt(center);
 
+      controls.target.copy(center);
+      controls.update();
+
       if (userTexture) aplicarTextura(userTexture);
     },
     undefined,
@@ -134,25 +137,25 @@ function carregarModelo(url) {
   );
 }
 
-// Função para aplicar textura (com suporte multi-material)
+// Função para aplicar textura (corrigida)
 function aplicarTextura(texture) {
   if (!loadedModel) return;
 
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
 
-  texture.repeat.set(
-    parseFloat(document.getElementById('repeatX').value) || 0.3,
-    parseFloat(document.getElementById('repeatY').value) || 0.3
-  );
-  texture.offset.set(
-    texture.offset.x || 0,
-    texture.offset.y || 0
-  );
+  const repeatX = parseFloat(document.getElementById('repeatX')?.value) || 0.3;
+  const repeatY = parseFloat(document.getElementById('repeatY')?.value) || 0.3;
+
+  texture.repeat.set(repeatX, repeatY);
+
+  // Se estiver sem offset ainda, zera:
+  texture.offset.x = texture.offset.x || 0;
+  texture.offset.y = texture.offset.y || 0;
   texture.needsUpdate = true;
 
   loadedModel.traverse((child) => {
-    if (child.isMesh) {
+    if (child.isMesh && child.geometry.attributes.uv) {
       if (Array.isArray(child.material)) {
         child.material.forEach((mat) => {
           mat.map = texture;
