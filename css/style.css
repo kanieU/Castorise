@@ -6767,8 +6767,16 @@ button.bg-dark:focus {
 }
 
 /* EUQUEFIZ botao da tradução   */
+.navbar-brand,
+.btntradu {
+  display: inline-flex;
+  align-items: center;
+}
 
 .btntradu {
+  margin-left: 10px;
+  color: #F78806; /* cor de destaque */
+  font-weight: bold;
   font-size: 17px;
   background: transparent;
   border: none;
@@ -6779,6 +6787,17 @@ button.bg-dark:focus {
   transition: 0.5s ease;
   cursor: pointer;
 }
+.btntradu .icon {
+  display: none;
+}
+@media (max-width: 768px) {
+  .btntradu .text {
+    display: none;
+  }
+   .btntradu .icon {
+    display: inline;
+    font-size: 20px; /* ajuste o tamanho do ícone */
+  }
 .btntradu::before {
   content: "";
   position: absolute;
