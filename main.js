@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DecalGeometry } from 'three/addons/geometries/DecalGeometry.js';
 
 const container = document.getElementById('threejs-container');
 
@@ -31,7 +32,7 @@ scene.add(directionalLight);
 const gltfLoader = new GLTFLoader();
 let loadedModel = null;
 let userTexture = null;
-let selectedPlane = null;
+let selectedDecal = null;
 
 const modelos = [
   './assets/cartao/cartao.gltf',
@@ -43,6 +44,9 @@ let modeloIndex = 0;
 let editTextureMode = false;
 let rotationSpeed = 0.01;
 
+let decalPosition = null;
+let decalNormal = null;
+let decalScale = 0.2;
 let isDragging = false;
 let lastMouseX = 0;
 let lastMouseY = 0;
@@ -51,10 +55,13 @@ document.getElementById('toggle-carimbo').addEventListener('click', () => {
   editTextureMode = !editTextureMode;
   if (!editTextureMode) {
     rotationSpeed = 0.01;
-    selectedPlane = null;
+    if (selectedDecal) {
+      scene.remove(selectedDecal);
+      selectedDecal = null;
+    }
   }
   document.getElementById('toggle-carimbo').textContent = editTextureMode
-    ? 'Desativar Modo teste'
+    ? 'Desativar Modo teste2'
     : 'Ativar Modo exibição';
 });
 
@@ -122,24 +129,15 @@ document.getElementById('myFile').addEventListener('change', function (event) {
     const loader = new THREE.TextureLoader();
     loader.load(e.target.result, function (texture) {
       userTexture = texture;
-      userTexture.needsUpdate = true; // 🔑 Importante!
-      console.log('Texture loaded:', userTexture);
+      userTexture.needsUpdate = true;
+      console.log('Texture loaded');
     });
   };
   reader.readAsDataURL(file);
 });
 
-// Clique para criar adesivo
 renderer.domElement.addEventListener('click', function (event) {
-  if (!editTextureMode || !loadedModel || !userTexture) {
-    console.log('No texture or model.');
-    return;
-  }
-
-  if (!userTexture.image) {
-    console.log('Texture has no image yet.');
-    return;
-  }
+  if (!editTextureMode || !loadedModel || !userTexture) return;
 
   const mouse = new THREE.Vector2(
     (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
@@ -153,70 +151,74 @@ renderer.domElement.addEventListener('click', function (event) {
 
   if (intersects.length > 0) {
     const intersect = intersects[0];
-    const position = intersect.point.clone();
-    const normal = intersect.face.normal.clone().transformDirection(intersect.object.matrixWorld);
+    decalPosition = intersect.point.clone();
+    decalNormal = intersect.face.normal.clone().transformDirection(intersect.object.matrixWorld);
 
-    const bbox = new THREE.Box3().setFromObject(loadedModel);
-    const size = bbox.getSize(new THREE.Vector3()).length;
-
-    const planeSize = size * 0.4; // 🔑 Tamanho maior!
-
-    const planeGeom = new THREE.PlaneGeometry(planeSize, planeSize);
-    const planeMat = new THREE.MeshBasicMaterial({
-      map: userTexture,
-      transparent: true,
-      side: THREE.DoubleSide,
-      depthTest: true
-    });
-
-    const planeMesh = new THREE.Mesh(planeGeom, planeMat);
-
-    // 🔑 Offset pra não sumir
-    planeMesh.position.copy(position).add(normal.clone().multiplyScalar(0.05));
-
-    // 🔑 Orientação certa
-    planeMesh.lookAt(position.clone().add(normal));
-
-    scene.add(planeMesh);
-
-    console.log('Plane created:', planeMesh);
-
-    selectedPlane = planeMesh;
+    createOrUpdateDecal();
     isDragging = true;
     lastMouseX = event.clientX;
     lastMouseY = event.clientY;
-  } else {
-    console.log('No intersection.');
   }
 });
 
-// Drag com mouse
 renderer.domElement.addEventListener('mousemove', function (event) {
-  if (editTextureMode && isDragging && selectedPlane) {
-    const dx = event.clientX - lastMouseX;
-    const dy = event.clientY - lastMouseY;
+  if (editTextureMode && isDragging && decalPosition) {
+    const dx = (event.clientX - lastMouseX) * 0.001;
+    const dy = (event.clientY - lastMouseY) * 0.001;
 
-    const movementScale = 0.001;
+    decalPosition.x += dx;
+    decalPosition.y -= dy;
 
-    selectedPlane.position.x += dx * movementScale;
-    selectedPlane.position.y -= dy * movementScale;
+    createOrUpdateDecal();
 
     lastMouseX = event.clientX;
     lastMouseY = event.clientY;
   }
 });
 
-renderer.domElement.addEventListener('mouseup', function () {
+renderer.domElement.addEventListener('mouseup', () => {
   isDragging = false;
 });
 
-// Scroll pra escalar
 renderer.domElement.addEventListener('wheel', function (event) {
-  if (editTextureMode && selectedPlane) {
+  if (editTextureMode && selectedDecal) {
     const delta = event.deltaY < 0 ? 1.1 : 0.9;
-    selectedPlane.scale.multiplyScalar(delta);
+    decalScale *= delta;
+    createOrUpdateDecal();
   }
 });
+
+function createOrUpdateDecal() {
+  if (!decalPosition || !decalNormal) return;
+
+  if (selectedDecal) {
+    scene.remove(selectedDecal);
+    selectedDecal.geometry.dispose();
+    selectedDecal.material.dispose();
+    selectedDecal = null;
+  }
+
+  const orientation = new THREE.Euler();
+  const up = new THREE.Vector3(0, 1, 0);
+  const lookAtMatrix = new THREE.Matrix4();
+  lookAtMatrix.lookAt(new THREE.Vector3(), decalNormal, up);
+  orientation.setFromRotationMatrix(lookAtMatrix);
+
+  const size = new THREE.Vector3(decalScale, decalScale, decalScale);
+
+  const decalGeom = new DecalGeometry(loadedModel, decalPosition, orientation, size);
+
+  const decalMat = new THREE.MeshBasicMaterial({
+    map: userTexture,
+    transparent: true,
+    depthTest: true,
+    polygonOffset: true,
+    polygonOffsetFactor: -4,
+  });
+
+  selectedDecal = new THREE.Mesh(decalGeom, decalMat);
+  scene.add(selectedDecal);
+}
 
 function animate() {
   if (loadedModel && !editTextureMode) {
