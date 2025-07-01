@@ -1,6 +1,6 @@
-import * as THREE from 'https://unpkg.com/three@0.160.1/build/three.module.js';
-import { OrbitControls } from 'https://unpkg.com/three@0.160.1/examples/jsm/controls/OrbitControls.js';
-import { GLTFLoader } from 'https://unpkg.com/three@0.160.1/examples/jsm/loaders/GLTFLoader.js';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const container = document.getElementById('threejs-container');
 
@@ -21,9 +21,7 @@ container.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 
 // Luzes
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-scene.add(ambientLight);
-
+scene.add(new THREE.AmbientLight(0xffffff, 0.5));
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.position.set(1, 1, 1).normalize();
 scene.add(directionalLight);
@@ -31,19 +29,17 @@ scene.add(directionalLight);
 // Loader GLTF
 const gltfLoader = new GLTFLoader();
 let loadedModel = null;
-let userTexture = null; // 🔑 Guarda a textura do usuário
+let userTexture = null;
 
-// 🔑 Lista de modelos no carrossel
 const modelos = [
-  
-  './assets/cartao/cartao.gltf', // 0 cartao (arrumar modelo 3d dele flicando)
-  './assets/caneca/caneca.gltf',// 1 
-  './assets/bone/bone.gltf', // 2
+  './assets/cartao/cartao.gltf',
+  './assets/caneca/caneca.gltf',
+  './assets/bone/bone.gltf',
 ];
 
-let modeloIndex = 0; // começa no Cartão
+let modeloIndex = 0;
 
-// Função para carregar modelo
+// Carrega modelo
 function carregarModelo(url) {
   if (loadedModel) {
     scene.remove(loadedModel);
@@ -74,65 +70,53 @@ function carregarModelo(url) {
       camera.position.set(center.x, center.y, distance * 1.5);
       camera.lookAt(center);
 
-      if (userTexture) {
-        aplicarTextura(userTexture);
-      }
+      if (userTexture) aplicarTextura(userTexture);
     },
     undefined,
-    (error) => {
-      console.error('Erro ao carregar o modelo:', error);
-    }
+    (error) => console.error('Erro ao carregar modelo:', error)
   );
 }
 
-// Função para aplicar textura
+// Nova função aplicar textura com carimbo
 function aplicarTextura(texture) {
   if (!loadedModel) return;
 
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+
+  texture.repeat.set(
+    parseFloat(document.getElementById('repeatX').value) || 0.3,
+    parseFloat(document.getElementById('repeatY').value) || 0.3
+  );
+  texture.offset.set(
+    parseFloat(document.getElementById('offsetX').value) || 0,
+    parseFloat(document.getElementById('offsetY').value) || 0
+  );
+
+  texture.needsUpdate = true;
+
   loadedModel.traverse((child) => {
     if (child.isMesh) {
-      if (child.material.map) {
-        child.material.map.dispose();
-      }
       child.material.map = texture;
       child.material.needsUpdate = true;
     }
   });
 }
 
-// Carrega o primeiro modelo (Cartão de Visita)
+// Primeira carga
 carregarModelo(modelos[modeloIndex]);
 
-// Botões
-const buttons = document.querySelectorAll('.botao-three');
-const prevButton = buttons[0]; // ←
-const nextButton = buttons[1]; // →
-
-// Botão →
-nextButton.addEventListener('click', () => {
-  modeloIndex++;
-  if (modeloIndex >= modelos.length) modeloIndex = 0; // loop volta pro início
+// Botões ← →
+document.querySelectorAll('.botao-three')[1].addEventListener('click', () => {
+  modeloIndex = (modeloIndex + 1) % modelos.length;
+  carregarModelo(modelos[modeloIndex]);
+});
+document.querySelectorAll('.botao-three')[0].addEventListener('click', () => {
+  modeloIndex = (modeloIndex - 1 + modelos.length) % modelos.length;
   carregarModelo(modelos[modeloIndex]);
 });
 
-// Botão ←
-prevButton.addEventListener('click', () => {
-  modeloIndex--;
-  if (modeloIndex < 0) modeloIndex = modelos.length - 1; // loop pro final
-  carregarModelo(modelos[modeloIndex]);
-});
-
-// Animação
-function animate() {
-  if (loadedModel) {
-    loadedModel.rotation.y += 0.01;
-  }
-
-  controls.update();
-  renderer.render(scene, camera);
-}
-
-// Upload de textura
+// Upload
 document.getElementById('myFile').addEventListener('change', function (event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -142,12 +126,24 @@ document.getElementById('myFile').addEventListener('change', function (event) {
     const img = new Image();
     img.onload = function () {
       const texture = new THREE.Texture(img);
-      texture.needsUpdate = true;
-
-      userTexture = texture; // 🔑 Salva a textura
-      aplicarTextura(userTexture);
+      userTexture = texture;
+      aplicarTextura(texture);
     };
     img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 });
+
+// Sliders para ajuste do carimbo
+['repeatX', 'repeatY', 'offsetX', 'offsetY'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => {
+    if (userTexture) aplicarTextura(userTexture);
+  });
+});
+
+// Animação
+function animate() {
+  if (loadedModel) loadedModel.rotation.y += 0.01;
+  controls.update();
+  renderer.render(scene, camera);
+}
