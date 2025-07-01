@@ -44,12 +44,11 @@ const modelos = [
 let modeloIndex = 0;
 
 let editTextureMode = false;
-let rotationSpeed = 0.01; // velocidade de rotação
+let rotationSpeed = 0.01;
 
 const transformControls = new TransformControls(camera, renderer.domElement);
 scene.add(transformControls);
 
-// Bloqueia OrbitControls enquanto usa TransformControls
 transformControls.addEventListener('dragging-changed', function (event) {
   controls.enabled = !event.value;
 });
@@ -57,10 +56,9 @@ transformControls.addEventListener('dragging-changed', function (event) {
 document.getElementById('toggle-carimbo').addEventListener('click', () => {
   editTextureMode = !editTextureMode;
 
-  // Quando ativa: desacelera suavemente
   if (!editTextureMode) {
-    rotationSpeed = 0.01; // volta a girar quando sair do modo mockup
-    transformControls.detach(); // solta o gizmo
+    rotationSpeed = 0.01;
+    transformControls.detach();
     selectedDecal = null;
   }
 
@@ -125,7 +123,6 @@ document.querySelectorAll('.botao-three')[0].addEventListener('click', () => {
   carregarModelo(modelos[modeloIndex]);
 });
 
-// Upload da textura
 document.getElementById('myFile').addEventListener('change', function (event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -140,7 +137,6 @@ document.getElementById('myFile').addEventListener('change', function (event) {
   reader.readAsDataURL(file);
 });
 
-// Criar Decal + anexar TransformControls
 renderer.domElement.addEventListener('click', function (event) {
   if (!editTextureMode || !loadedModel || !userTexture) return;
 
@@ -156,13 +152,19 @@ renderer.domElement.addEventListener('click', function (event) {
 
   if (intersects.length > 0) {
     const intersect = intersects[0];
-    const position = intersect.point;
+    const position = intersect.point.clone();
     const normal = intersect.face.normal.clone().transformDirection(intersect.object.matrixWorld);
 
+    // Alinha decal para ficar "colado" na face
     const orientation = new THREE.Euler();
-    orientation.setFromVector3(normal);
+    const lookAtMatrix = new THREE.Matrix4();
+    lookAtMatrix.lookAt(new THREE.Vector3(), normal, new THREE.Vector3(0, 1, 0));
+    orientation.setFromRotationMatrix(lookAtMatrix);
 
-    const decalSize = new THREE.Vector3(0.2, 0.2, 0.2);
+    // Tamanho proporcional ao objeto
+    const bbox = new THREE.Box3().setFromObject(loadedModel);
+    const size = bbox.getSize(new THREE.Vector3()).length();
+    const decalSize = new THREE.Vector3(size * 0.1, size * 0.1, size * 0.1);
 
     const decalGeom = new DecalGeometry(intersect.object, position, orientation, decalSize);
 
@@ -175,11 +177,16 @@ renderer.domElement.addEventListener('click', function (event) {
       polygonOffsetFactor: -4,
     });
 
-    const decalMesh = new THREE.Mesh(decalGeom, decalMat);
+    if (selectedDecal) {
+      selectedDecal.geometry.dispose();
+      selectedDecal.geometry = decalGeom;
+      selectedDecal.material = decalMat;
+    } else {
+      const decalMesh = new THREE.Mesh(decalGeom, decalMat);
+      intersect.object.add(decalMesh);
+      selectedDecal = decalMesh;
+    }
 
-    intersect.object.add(decalMesh);
-
-    selectedDecal = decalMesh;
     transformControls.attach(selectedDecal);
   }
 });
