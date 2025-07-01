@@ -44,6 +44,51 @@ const modelos = [
 
 let modeloIndex = 0;
 
+// Modo Carimbo
+let editTextureMode = false;
+
+// Controles de drag
+let isDragging = false;
+let prevMouseX = 0;
+let prevMouseY = 0;
+
+renderer.domElement.addEventListener('mousedown', (e) => {
+  if (!editTextureMode) return;
+  isDragging = true;
+  prevMouseX = e.clientX;
+  prevMouseY = e.clientY;
+});
+
+renderer.domElement.addEventListener('mouseup', () => {
+  isDragging = false;
+});
+
+renderer.domElement.addEventListener('mousemove', (e) => {
+  if (!editTextureMode) return;
+  if (isDragging && userTexture) {
+    const deltaX = e.clientX - prevMouseX;
+    const deltaY = e.clientY - prevMouseY;
+
+    const scale = 0.002;
+
+    userTexture.offset.x += deltaX * scale;
+    userTexture.offset.y -= deltaY * scale;
+
+    prevMouseX = e.clientX;
+    prevMouseY = e.clientY;
+
+    userTexture.needsUpdate = true;
+  }
+});
+
+// Toggle modo carimbo
+document.getElementById('toggle-carimbo').addEventListener('click', () => {
+  editTextureMode = !editTextureMode;
+  document.getElementById('toggle-carimbo').textContent = editTextureMode
+    ? 'Desativar Modo Carimbo'
+    : 'Ativar Modo Carimbo';
+});
+
 // Função para carregar o modelo
 function carregarModelo(url) {
   if (loadedModel) {
@@ -101,8 +146,8 @@ function aplicarTextura(texture) {
     parseFloat(document.getElementById('repeatY').value) || 0.3
   );
   texture.offset.set(
-    parseFloat(document.getElementById('offsetX').value) || 0,
-    parseFloat(document.getElementById('offsetY').value) || 0
+    texture.offset.x || 0,
+    texture.offset.y || 0
   );
   texture.needsUpdate = true;
 
@@ -134,7 +179,7 @@ document.querySelectorAll('.botao-three')[0].addEventListener('click', () => {
   carregarModelo(modelos[modeloIndex]);
 });
 
-// Upload de textura usando TextureLoader (seguro!)
+// Upload de textura usando TextureLoader
 document.getElementById('myFile').addEventListener('change', function (event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -153,8 +198,8 @@ document.getElementById('myFile').addEventListener('change', function (event) {
   reader.readAsDataURL(file);
 });
 
-// Sliders para ajuste dinâmico
-['repeatX', 'repeatY', 'offsetX', 'offsetY'].forEach((id) => {
+// Sliders para ajuste de escala
+['repeatX', 'repeatY'].forEach((id) => {
   document.getElementById(id).addEventListener('input', () => {
     if (userTexture) aplicarTextura(userTexture);
   });
