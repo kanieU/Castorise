@@ -6767,9 +6767,7 @@ button.bg-dark:focus {
 }
 
 /* ---------- BOTÃO TRADUÇÃO ---------- */
-/* ======== BOTÃO TRADUÇÃO ORIGINAL ======== */
-.btntradu {
-  font-size: 17px;
+font-size: 17px;
   background: transparent;
   border: none;
   padding: 1em 1.5em;
@@ -6778,9 +6776,7 @@ button.bg-dark:focus {
   position: relative;
   transition: 0.5s ease;
   cursor: pointer;
-  overflow: hidden; /* garante o after/ before animando certo */
 }
-
 .btntradu::before {
   content: "";
   position: absolute;
@@ -6791,7 +6787,6 @@ button.bg-dark:focus {
   background-color: #F78806;
   transition: 0.5s ease;
 }
-
 .btntradu:hover {
   color: #1e1e2b;
   transition-delay: 0.5s;
@@ -6816,32 +6811,8 @@ button.bg-dark:focus {
 .btntradu:hover::after {
   height: 100%;
   transition-delay: 0.4s;
-}
-
-/* ======== MODO ÍCONE NO MOBILE ======== */
-.btntradu .icon {
-  display: none;
-}
-
-@media (max-width: 768px) {
-  .btntradu .text {
-    display: none;
-  }
-
-  .btntradu .icon {
-    display: inline;
-    font-size: 20px;
-    vertical-align: middle;
-  }
-}
-
-/* Alinhar com logo, se precisar */
-.navbar-brand,
-.btntradu {
-  display: inline-flex;
-  align-items: center;
-}
-
+  color: aliceblue;
+} 
 
 
 
