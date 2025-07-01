@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DecalGeometry } from 'three/addons/geometries/DecalGeometry.js';
 
 const container = document.getElementById('threejs-container');
 
@@ -41,44 +42,11 @@ let modeloIndex = 0;
 
 let editTextureMode = false;
 
-let isDragging = false;
-let prevMouseX = 0;
-let prevMouseY = 0;
-
-renderer.domElement.addEventListener('mousedown', (e) => {
-  if (!editTextureMode) return;
-  isDragging = true;
-  prevMouseX = e.clientX;
-  prevMouseY = e.clientY;
-});
-
-renderer.domElement.addEventListener('mouseup', () => {
-  isDragging = false;
-});
-
-renderer.domElement.addEventListener('mousemove', (e) => {
-  if (!editTextureMode) return;
-  if (isDragging && userTexture) {
-    const deltaX = e.clientX - prevMouseX;
-    const deltaY = e.clientY - prevMouseY;
-
-    const scale = 0.002;
-
-    userTexture.offset.x += deltaX * scale;
-    userTexture.offset.y -= deltaY * scale;
-
-    prevMouseX = e.clientX;
-    prevMouseY = e.clientY;
-
-    userTexture.needsUpdate = true;
-  }
-});
-
 document.getElementById('toggle-carimbo').addEventListener('click', () => {
   editTextureMode = !editTextureMode;
   document.getElementById('toggle-carimbo').textContent = editTextureMode
-    ? 'Desativar Modo Carimbo'
-    : 'Ativar Modo Carimbo';
+    ? 'Desativar Modo Mockup'
+    : 'Ativar Modo Mockup';
 });
 
 function carregarModelo(url) {
@@ -120,37 +88,10 @@ function carregarModelo(url) {
 
       controls.target.copy(center);
       controls.update();
-
-      if (userTexture) aplicarTextura(userTexture);
     },
     undefined,
     (error) => console.error('Erro ao carregar modelo:', error)
   );
-}
-
-function aplicarTextura(texture) {
-  if (!loadedModel) return;
-
-  texture.wrapS = THREE.RepeatWrapping;
-  texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(0.3, 0.3);
-  texture.needsUpdate = true;
-
-  loadedModel.traverse((child) => {
-    if (child.isMesh && child.geometry.attributes.uv) {
-      if (Array.isArray(child.material)) {
-        child.material.forEach((mat) => {
-          mat.map = texture;
-          mat.color = new THREE.Color(0xffffff);
-          mat.needsUpdate = true;
-        });
-      } else {
-        child.material.map = texture;
-        child.material.color = new THREE.Color(0xffffff);
-        child.material.needsUpdate = true;
-      }
-    }
-  });
 }
 
 carregarModelo(modelos[modeloIndex]);
@@ -164,6 +105,7 @@ document.querySelectorAll('.botao-three')[0].addEventListener('click', () => {
   carregarModelo(modelos[modeloIndex]);
 });
 
+// Upload
 document.getElementById('myFile').addEventListener('change', function (event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -173,14 +115,55 @@ document.getElementById('myFile').addEventListener('change', function (event) {
     const loader = new THREE.TextureLoader();
     loader.load(e.target.result, function (texture) {
       userTexture = texture;
-      aplicarTextura(texture);
     });
   };
   reader.readAsDataURL(file);
 });
 
+// Mockup Decalque ao clicar no objeto
+renderer.domElement.addEventListener('click', function (event) {
+  if (!editTextureMode || !loadedModel || !userTexture) return;
+
+  const mouse = new THREE.Vector2(
+    (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
+    -(event.clientY / renderer.domElement.clientHeight) * 2 + 1
+  );
+
+  const raycaster = new THREE.Raycaster();
+  raycaster.setFromCamera(mouse, camera);
+
+  const intersects = raycaster.intersectObject(loadedModel, true);
+
+  if (intersects.length > 0) {
+    const intersect = intersects[0];
+    const position = intersect.point;
+    const normal = intersect.face.normal.clone().transformDirection(intersect.object.matrixWorld);
+
+    const orientation = new THREE.Euler();
+    orientation.setFromVector3(normal);
+
+    const decalSize = new THREE.Vector3(0.2, 0.2, 0.2);
+
+    const decalGeom = new DecalGeometry(intersect.object, position, orientation, decalSize);
+
+    const decalMat = new THREE.MeshBasicMaterial({
+      map: userTexture,
+      transparent: true,
+      depthTest: true,
+      depthWrite: false,
+      polygonOffset: true,
+      polygonOffsetFactor: -4,
+    });
+
+    const decalMesh = new THREE.Mesh(decalGeom, decalMat);
+    scene.add(decalMesh);
+  }
+});
+
 function animate() {
-  if (loadedModel) loadedModel.rotation.y += 0.01;
+  if (loadedModel && !editTextureMode) {
+    loadedModel.rotation.y += 0.01;
+  }
   controls.update();
   renderer.render(scene, camera);
 }
