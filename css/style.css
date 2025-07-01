@@ -9882,19 +9882,40 @@ textarea.form-control {
     stroke-dasharray: 89, 200;
     stroke-dashoffset: -136px; } }
 
-/* 👇 cole isto no FINAL do seu style.css */
-
 .home-slider {
   position: relative;
   width: 100%;
+  min-height: 100vh;
   overflow: hidden;
 }
 
+/* Força o .slider-item a ocupar tudo */
 .home-slider .slider-item {
   position: relative;
   width: 100%;
-  min-height: 100vh;  /* altura mínima de tela inteira */
+  min-height: 100vh;
   background-size: cover;
   background-position: center center;
+  display: flex;
+  align-items: center;
+}
+
+/* Garante que a .one-third tenha altura total */
+.home-slider .one-third {
+  min-height: 100vh;
+}
+
+/* Corrige a overlay pra não tampar tudo */
+.home-slider .overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.3); /* ajuste se precisar */
+  z-index: 1;
+}
+
+.home-slider .text {
+  position: relative;
+  z-index: 2;
+  color: #fff;
 }
 
