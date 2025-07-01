@@ -7,7 +7,6 @@ const container = document.getElementById('threejs-container');
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xffffff);
 
-// Câmera
 const camera = new THREE.PerspectiveCamera(
   75,
   container.clientWidth / container.clientHeight,
@@ -16,22 +15,18 @@ const camera = new THREE.PerspectiveCamera(
 );
 camera.position.z = 0.2;
 
-// Renderizador
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(container.clientWidth, container.clientHeight);
 renderer.setAnimationLoop(animate);
 container.appendChild(renderer.domElement);
 
-// Controles
 const controls = new OrbitControls(camera, renderer.domElement);
 
-// Luzes
 scene.add(new THREE.AmbientLight(0xffffff, 0.5));
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.position.set(1, 1, 1).normalize();
 scene.add(directionalLight);
 
-// Loader GLTF
 const gltfLoader = new GLTFLoader();
 let loadedModel = null;
 let userTexture = null;
@@ -44,10 +39,8 @@ const modelos = [
 
 let modeloIndex = 0;
 
-// Modo Carimbo
 let editTextureMode = false;
 
-// Controles de drag
 let isDragging = false;
 let prevMouseX = 0;
 let prevMouseY = 0;
@@ -81,7 +74,6 @@ renderer.domElement.addEventListener('mousemove', (e) => {
   }
 });
 
-// Toggle modo carimbo
 document.getElementById('toggle-carimbo').addEventListener('click', () => {
   editTextureMode = !editTextureMode;
   document.getElementById('toggle-carimbo').textContent = editTextureMode
@@ -89,7 +81,6 @@ document.getElementById('toggle-carimbo').addEventListener('click', () => {
     : 'Ativar Modo Carimbo';
 });
 
-// Função para carregar o modelo (corrigida)
 function carregarModelo(url) {
   if (loadedModel) {
     scene.remove(loadedModel);
@@ -137,21 +128,12 @@ function carregarModelo(url) {
   );
 }
 
-// Função para aplicar textura (corrigida)
 function aplicarTextura(texture) {
   if (!loadedModel) return;
 
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
-
-  const repeatX = parseFloat(document.getElementById('repeatX')?.value) || 0.3;
-  const repeatY = parseFloat(document.getElementById('repeatY')?.value) || 0.3;
-
-  texture.repeat.set(repeatX, repeatY);
-
-  // Se estiver sem offset ainda, zera:
-  texture.offset.x = texture.offset.x || 0;
-  texture.offset.y = texture.offset.y || 0;
+  texture.repeat.set(0.3, 0.3);
   texture.needsUpdate = true;
 
   loadedModel.traverse((child) => {
@@ -159,20 +141,20 @@ function aplicarTextura(texture) {
       if (Array.isArray(child.material)) {
         child.material.forEach((mat) => {
           mat.map = texture;
+          mat.color = new THREE.Color(0xffffff);
           mat.needsUpdate = true;
         });
       } else {
         child.material.map = texture;
+        child.material.color = new THREE.Color(0xffffff);
         child.material.needsUpdate = true;
       }
     }
   });
 }
 
-// Primeira carga
 carregarModelo(modelos[modeloIndex]);
 
-// Botões ← →
 document.querySelectorAll('.botao-three')[1].addEventListener('click', () => {
   modeloIndex = (modeloIndex + 1) % modelos.length;
   carregarModelo(modelos[modeloIndex]);
@@ -182,7 +164,6 @@ document.querySelectorAll('.botao-three')[0].addEventListener('click', () => {
   carregarModelo(modelos[modeloIndex]);
 });
 
-// Upload de textura usando TextureLoader
 document.getElementById('myFile').addEventListener('change', function (event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -191,9 +172,6 @@ document.getElementById('myFile').addEventListener('change', function (event) {
   reader.onload = function (e) {
     const loader = new THREE.TextureLoader();
     loader.load(e.target.result, function (texture) {
-      texture.wrapS = THREE.RepeatWrapping;
-      texture.wrapT = THREE.RepeatWrapping;
-
       userTexture = texture;
       aplicarTextura(texture);
     });
@@ -201,14 +179,6 @@ document.getElementById('myFile').addEventListener('change', function (event) {
   reader.readAsDataURL(file);
 });
 
-// Sliders para ajuste de escala
-['repeatX', 'repeatY'].forEach((id) => {
-  document.getElementById(id).addEventListener('input', () => {
-    if (userTexture) aplicarTextura(userTexture);
-  });
-});
-
-// Animação
 function animate() {
   if (loadedModel) loadedModel.rotation.y += 0.01;
   controls.update();
