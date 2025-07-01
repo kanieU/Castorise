@@ -54,8 +54,8 @@ document.getElementById('toggle-carimbo').addEventListener('click', () => {
     selectedPlane = null;
   }
   document.getElementById('toggle-carimbo').textContent = editTextureMode
-    ? 'Desativar Modo Edição'
-    : 'Ativar Modo Edição';
+    ? 'Desativar Modo carimbo'
+    : 'Ativar Modo Mockup';
 });
 
 function carregarModelo(url) {
@@ -127,7 +127,7 @@ document.getElementById('myFile').addEventListener('change', function (event) {
   reader.readAsDataURL(file);
 });
 
-// Clique cria um novo plano adesivo colado
+// Clique cria o adesivo
 renderer.domElement.addEventListener('click', function (event) {
   if (!editTextureMode || !loadedModel || !userTexture) return;
 
@@ -149,29 +149,35 @@ renderer.domElement.addEventListener('click', function (event) {
     const bbox = new THREE.Box3().setFromObject(loadedModel);
     const size = bbox.getSize(new THREE.Vector3()).length;
 
-    const planeSize = size * 0.3; // maior
+    const planeSize = size * 0.4; // 🔑 Tamanho maior
 
     const planeGeom = new THREE.PlaneGeometry(planeSize, planeSize);
     const planeMat = new THREE.MeshBasicMaterial({
       map: userTexture,
       transparent: true,
+      side: THREE.DoubleSide,      // ✅ Renderiza os 2 lados
+      depthTest: true,
     });
 
     const planeMesh = new THREE.Mesh(planeGeom, planeMat);
-    planeMesh.position.copy(position).add(normal.clone().multiplyScalar(0.01));
-    planeMesh.lookAt(position.clone().add(normal));
+
+    // 🔑 Offset maior pra não afundar
+    planeMesh.position.copy(position).add(normal.clone().multiplyScalar(0.02));
+
+    // 🔑 Virado pra fora
+    const target = position.clone().add(normal);
+    planeMesh.lookAt(target);
 
     scene.add(planeMesh);
     selectedPlane = planeMesh;
 
-    // comece a arrastar imediatamente
     isDragging = true;
     lastMouseX = event.clientX;
     lastMouseY = event.clientY;
   }
 });
 
-// Arrasta o adesivo com mouse
+// Arrastar com mouse
 renderer.domElement.addEventListener('mousemove', function (event) {
   if (editTextureMode && isDragging && selectedPlane) {
     const dx = event.clientX - lastMouseX;
@@ -187,12 +193,11 @@ renderer.domElement.addEventListener('mousemove', function (event) {
   }
 });
 
-// Para de arrastar
 renderer.domElement.addEventListener('mouseup', function () {
   isDragging = false;
 });
 
-// Scroll aumenta/diminui
+// Scroll ajusta tamanho
 renderer.domElement.addEventListener('wheel', function (event) {
   if (editTextureMode && selectedPlane) {
     const delta = event.deltaY < 0 ? 1.1 : 0.9;
