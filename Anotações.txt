@@ -9,5 +9,6 @@ css adcionados por mim em
 css/style.css
 
 dropdown(menu) class menusizn
+botao tradução: btntradu
 
 site para hospedar: infinity free
