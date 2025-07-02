@@ -41,20 +41,27 @@
   box-sizing: border-box; }
 
 /* testando sa porra */
-.nav-item.dropdown {
-  position: relative;
-}
-
+/* Padrão: Mobile, alinhado à esquerda */
 .dropdown-child {
   position: absolute;
   left: 0;
-  background: #000; /* ou outra cor */
+  background: #000; /* cor de fundo */
   display: none;
 }
 
+/* Mostra dropdown ao passar o mouse */
 .nav-item.dropdown:hover .dropdown-child {
   display: block;
 }
+
+/* Para telas >= 768px, alinhar à direita */
+@media (min-width: 768px) {
+  .dropdown-child {
+    left: auto;
+    right: 0;
+  }
+}
+
 
 
 
