@@ -40,52 +40,6 @@
   -webkit-box-sizing: border-box;
   box-sizing: border-box; }
 
-/* ------------------------------
-   Corrige a estrutura da navbar
-   e o botão dropdown Acesso
------------------------------- */
-
-/* 1️⃣ Garante que a navbar use flex corretamente */
-.navbar-nav {
-  display: flex;
-  align-items: center;
-}
-
-/* 2️⃣ O item com dropdown precisa de position relative */
-.navbar-nav .dropdown {
-  position: relative;
-}
-
-/* 3️⃣ O menu do dropdown deve ser absoluto e fora do fluxo */
-.navbar-nav .dropdown-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  min-width: 150px; /* ajuste o tamanho mínimo */
-  z-index: 9999;
-  background: #fff; /* ou sua cor de fundo */
-  border: 1px solid #ccc; /* opcional */
-}
-
-/* 4️⃣ Para alinhar à direita, se usar dropdown-menu-right */
-.navbar-nav .dropdown-menu-right {
-  right: 0;
-  left: auto;
-}
-
-/* 5️⃣ Itens dentro do dropdown */
-.navbar-nav .dropdown-item {
-  display: block;
-  padding: 10px 15px;
-  color: #333; /* cor do link */
-  text-decoration: none;
-}
-
-.navbar-nav .dropdown-item:hover {
-  background: #f1f1f1; /* cor de hover */
-  color: #000;
-}
-
 
 
 #threejs-container {
