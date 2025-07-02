@@ -40,6 +40,23 @@
   -webkit-box-sizing: border-box;
   box-sizing: border-box; }
 
+/* testando sa porra */
+.nav-item.dropdown {
+  position: relative;
+}
+
+.dropdown-child {
+  position: absolute;
+  left: 0;
+  background: #000; /* ou outra cor */
+  display: none;
+}
+
+.nav-item.dropdown:hover .dropdown-child {
+  display: block;
+}
+
+
 
 #threejs-container {
   position: relative;
