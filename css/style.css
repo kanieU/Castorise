@@ -103,6 +103,14 @@
   border-radius: 5px;
   cursor: pointer;
 }
+@media (max-width: 767px) {
+  botao-three {
+    font-size: 14px;         /* Fonte menor para caber */
+    padding: 8px 12px;       /* Menos espaço interno */
+    border-radius: 4px;      /* Bordas levemente menores */
+  }
+}
+
 
 .botao-three:hover {
   background-color: #d67000;
