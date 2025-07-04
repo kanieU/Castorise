@@ -150,26 +150,26 @@ h1, h2, h3, h4, h5, h6 {
   }
 
 /* texto no mobile */
-@media (max-width: 767px) { 
+@media (max-width: 767px) {
   .texto-animado {
-    display: block;
+    display: inline-block;
     width: 100%;
     max-width: 100%;
     text-align: center;
-    overflow: visible; /* deixe visível pra não cortar */
-    height: auto; /* remove altura fixa */
-    line-height: 1.2em; /* linha normal */
+    overflow: visible;
+    height: auto; /* Libera altura */
+    line-height: normal;
     position: relative;
   }
 
   .texto-animado span {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    position: static; /* remove absoluto */
+    display: block;
     white-space: nowrap;
     text-align: center;
   }
 }
+
 
 
 
