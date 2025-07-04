@@ -159,31 +159,23 @@ h1, h2, h3, h4, h5, h6 {
 /* texto no mobile */
 @media (max-width: 767px) {
   .texto-animado {
-    display: inline-block;
+    display: block;
     width: 100%;
     max-width: 100%;
     text-align: center;
-    overflow: visible;
-    height: auto;
-    line-height: normal;
+    overflow: hidden;      /* Garante que não transborda */
     position: relative;
+    height: auto;          /* Remove height fixa */
+    min-height: 2.5em;     /* Reservar altura para palavras maiores */
   }
 
   .texto-animado span {
-    position: static !important; /* nada de absoluto */
-    display: inline;             /* inline normal */
-    opacity: 1 !important;       /* sempre visível */
-    animation: none !important;  /* desliga animação */
-  }
-
-  .texto-animado span:not(:first-child) {
-    display: none !important;    /* mostra só o primeiro */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;   /* Não quebra */
   }
 }
-
-
-
-
 
   .texto-animado span {
     position: absolute;
