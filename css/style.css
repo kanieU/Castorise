@@ -134,17 +134,37 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
   margin-bottom: 0.5rem; }
 
+/* O original permanece: desktop */
 .texto-animado {
-  display: inline-block;
   position: relative;
-  width: auto;
-  height: 1em;
+  display: inline-block;
 }
 
 .texto-animado span {
   position: absolute;
-  /* ... */
+  opacity: 0;
+  animation: fade 6s linear infinite;
+  color: #F78806;
 }
+
+/* MOBILE: para telas pequenas */
+@media (max-width: 767px) {
+  h1 {
+    text-align: center;
+  }
+
+  .texto-animado {
+    display: inline; /* deixa fluir na linha */
+  }
+
+  .texto-animado span {
+    position: static; /* volta ao fluxo normal */
+    display: inline; /* não fica absoluto */
+    opacity: 1 !important; /* sempre visível */
+    animation: none; /* desativa a animação ou deixe só um ciclo */
+  }
+}
+
 
     /* 3 palavras → 6s total → cada uma 2s */
   .texto-animado span:nth-child(1) {
