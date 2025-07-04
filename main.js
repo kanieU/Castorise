@@ -65,11 +65,26 @@ document.getElementById('toggle-carimbo').addEventListener('click', () => {
 
 const textoCarimbo = document.querySelector('#toggle-carimbo .carimbo-text');
 
-if (window.innerWidth > 767) {
-  textoCarimbo.textContent = editTextureMode
-    ? 'Desativar Modo edição'
-    : 'Ativar Modo Carimbo';
-}
+document.getElementById('toggle-carimbo').addEventListener('click', () => {
+  editTextureMode = !editTextureMode;
+
+  // Ativar/desativar classe "ativo"
+  const botaoCarimbo = document.getElementById('toggle-carimbo');
+  if (editTextureMode) {
+    botaoCarimbo.classList.add('ativo');
+  } else {
+    botaoCarimbo.classList.remove('ativo');
+  }
+
+  // Trocar texto apenas no desktop
+  const textoCarimbo = document.querySelector('#toggle-carimbo .carimbo-text');
+  if (window.innerWidth > 767) {
+    textoCarimbo.textContent = editTextureMode
+      ? 'Desativar Modo edição'
+      : 'Ativar Modo Carimbo';
+  }
+});
+
 
 });
 
