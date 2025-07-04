@@ -140,21 +140,26 @@ h1, h2, h3, h4, h5, h6 {
     width: 200px;
     height: 1em;
   }
+
 @media (max-width: 767px) {
   .texto-animado {
+    display: block;
     width: 100%;
     max-width: 100%;
     text-align: center;
     overflow: hidden;
+    position: relative;
   }
 
   .texto-animado span {
-    left: 0;
-    right: 0;
-    margin: 0 auto;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap; /* Impede quebra de linha */
     text-align: center;
   }
 }
+
 
   .texto-animado span {
     position: absolute;
