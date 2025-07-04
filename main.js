@@ -65,7 +65,7 @@ botaoCarimbo.addEventListener('click', () => {
     botaoCarimbo.dataset.ativo = 'false';
     botaoCarimbo.classList.remove('ativo');
     if (window.innerWidth > 767) {
-      textoCarimbo.textContent = 'Ativar Modo Carimbo';
+      textoCarimbo.textContent = 'Ativar Modo edição';
     }
     editTextureMode = false;
     rotationSpeed = 0.01;
