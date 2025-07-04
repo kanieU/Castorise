@@ -70,11 +70,14 @@
 }
 @media (max-width: 767px) {
   #threejs-container {
-    width: 100% !important;  /* ocupa toda a largura da tela */
-    height: auto !important; /* altura automática */
-    aspect-ratio: 16/9;       /* mantém proporção de tela widescreen */
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 9/16; /* Retrato — tipo celular */
+    max-height: 90vh;   /* Limita altura pra caber na tela */
+    margin: 0 auto;
   }
 }
+
 
 
 .threejs-ui {
