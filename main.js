@@ -63,30 +63,34 @@ document.getElementById('toggle-carimbo').addEventListener('click', () => {
     }
   }
 
+const botaoCarimbo = document.getElementById('toggle-carimbo');
 const textoCarimbo = document.querySelector('#toggle-carimbo .carimbo-text');
 
-document.getElementById('toggle-carimbo').addEventListener('click', () => {
-  editTextureMode = !editTextureMode;
+// Guarde o estado no próprio botão (evita conflito global)
+botaoCarimbo.dataset.ativo = 'false';
 
-  // Ativar/desativar classe "ativo"
-  const botaoCarimbo = document.getElementById('toggle-carimbo');
-  if (editTextureMode) {
-    botaoCarimbo.classList.add('ativo');
-  } else {
+botaoCarimbo.addEventListener('click', () => {
+  const isAtivo = botaoCarimbo.dataset.ativo === 'true';
+
+  if (isAtivo) {
+    botaoCarimbo.dataset.ativo = 'false';
     botaoCarimbo.classList.remove('ativo');
-  }
-
-  // Trocar texto apenas no desktop
-  const textoCarimbo = document.querySelector('#toggle-carimbo .carimbo-text');
-  if (window.innerWidth > 767) {
-    textoCarimbo.textContent = editTextureMode
-      ? 'Desativar Modo edição'
-      : 'Ativar Modo Carimbo';
+    if (window.innerWidth > 767) {
+      textoCarimbo.textContent = 'Ativar Modo Carimbo';
+    }
+    // Coloque aqui a lógica de SAIR do modo edição
+    editTextureMode = false;
+  } else {
+    botaoCarimbo.dataset.ativo = 'true';
+    botaoCarimbo.classList.add('ativo');
+    if (window.innerWidth > 767) {
+      textoCarimbo.textContent = 'Desativar Modo edição';
+    }
+    // Coloque aqui a lógica de ENTRAR no modo edição
+    editTextureMode = true;
   }
 });
 
-
-});
 
 function carregarModelo(url) {
   if (loadedModel) {
