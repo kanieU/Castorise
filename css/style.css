@@ -10002,27 +10002,30 @@ textarea.form-control {
 
 /* zoom no login */
 @media (max-width: 767px) {
+  body {
+    overflow: visible; /* deixa o zoom vazar se precisar */
+  }
+
   form {
-    transform: translate(-50%, -50%) scale(1.5); /* aumenta 1.5x */
-    width: 400px;   /* largura base para escalar */
-    height: auto;
+    transform: translate(-50%, -50%) scale(2); /* ZOOM 2x */
+    transform-origin: center center;
   }
 
   .background {
-    transform: translate(-50%, -50%) scale(1.5); /* aplica mesmo zoom */
-    width: 430px;
-    height: 520px;
+    transform: translate(-50%, -50%) scale(2);
+    transform-origin: center center;
   }
 
   input {
-    height: 60px;
-    font-size: 18px;
+    height: 65px;
+    font-size: 22px;
   }
 
   button {
-    font-size: 22px;
-    padding: 20px 0;
+    font-size: 24px;
+    padding: 24px 0;
   }
 }
+
 
 
