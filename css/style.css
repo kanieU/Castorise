@@ -68,6 +68,14 @@
 #threejs-container {
   position: relative;
 }
+@media (max-width: 767px) {
+  #threejs-container {
+    width: 100% !important;  /* ocupa toda a largura da tela */
+    height: auto !important; /* altura automática */
+    aspect-ratio: 16/9;       /* mantém proporção de tela widescreen */
+  }
+}
+
 
 .threejs-ui {
   position: absolute;
