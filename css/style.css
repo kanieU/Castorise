@@ -139,18 +139,14 @@ h1, h2, h3, h4, h5, h6 {
   position: relative;
   width: auto;
   height: 1em;
-  white-space: nowrap;
 }
 
-  
-  .texto-animado span {
-    position: absolute;
-    opacity: 0;
-    animation: fade 6s linear infinite;
-    color: #F78806;
-  }
-  
-  /* 3 palavras → 6s total → cada uma 2s */
+.texto-animado span {
+  position: absolute;
+  /* ... */
+}
+
+    /* 3 palavras → 6s total → cada uma 2s */
   .texto-animado span:nth-child(1) {
     animation-delay: 0s;
   }
