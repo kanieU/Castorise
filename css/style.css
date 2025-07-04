@@ -164,18 +164,23 @@ h1, h2, h3, h4, h5, h6 {
     max-width: 100%;
     text-align: center;
     overflow: visible;
-    height: auto; /* Libera altura */
+    height: auto;
     line-height: normal;
     position: relative;
   }
 
   .texto-animado span {
-    position: static; /* remove absoluto */
-    display: block;
-    white-space: nowrap;
-    text-align: center;
+    position: static !important; /* nada de absoluto */
+    display: inline;             /* inline normal */
+    opacity: 1 !important;       /* sempre visível */
+    animation: none !important;  /* desliga animação */
+  }
+
+  .texto-animado span:not(:first-child) {
+    display: none !important;    /* mostra só o primeiro */
   }
 }
+
 
 
 
