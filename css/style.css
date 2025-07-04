@@ -9999,27 +9999,30 @@ textarea.form-control {
     stroke-dasharray: 89, 200;
     stroke-dashoffset: -136px; } }
 
+
+/* zoom no login */
 @media (max-width: 767px) {
   form {
-    width: 90%;
+    transform: translate(-50%, -50%) scale(1.5); /* aumenta 1.5x */
+    width: 400px;   /* largura base para escalar */
     height: auto;
-    padding: 40px 20px;
   }
 
   .background {
-    width: 100%;
-    height: auto;
-    transform: translate(-50%, -50%) scale(1.2);
+    transform: translate(-50%, -50%) scale(1.5); /* aplica mesmo zoom */
+    width: 430px;
+    height: 520px;
   }
 
   input {
-    height: 55px;
-    font-size: 16px;
+    height: 60px;
+    font-size: 18px;
   }
 
   button {
-    font-size: 20px;
-    padding: 18px 0;
+    font-size: 22px;
+    padding: 20px 0;
   }
 }
+
 
