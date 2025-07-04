@@ -125,7 +125,13 @@
     align-items: center;
     justify-content: center;
   }
+  #toggle-carimbo.ativo {
+  background-color: #999; /* cor acinzentada quando ativo */
 }
+
+#toggle-carimbo.ativo:hover {
+  background-color: #777; /* um tom mais escuro se passar o mouse */
+} }
 
 
 
