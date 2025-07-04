@@ -137,6 +137,33 @@ button{
   margin-right: 4px;
 }
 
+@media (max-width: 767px) {
+  body {
+    overflow: visible; /* permite overflow do zoom */
+  }
+
+  .background {
+    transform: translate(-50%,-50%) scale(2.2);
+    transform-origin: center center;
+  }
+
+  form {
+    transform: translate(-50%,-50%) scale(2.2);
+    transform-origin: center center;
+  }
+
+  input {
+    height: 65px;
+    font-size: 20px;
+  }
+
+  button {
+    font-size: 24px;
+    padding: 24px 0;
+  }
+}
+
+	    
     </style>
 </head>
 <body>
