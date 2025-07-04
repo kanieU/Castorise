@@ -103,13 +103,30 @@
   border-radius: 5px;
   cursor: pointer;
 }
+#toggle-carimbo .carimbo-icon {
+  display: none; /* Ícone escondido no desktop */
+}
+
 @media (max-width: 767px) {
-  botao-three {
-    font-size: 14px;         /* Fonte menor para caber */
-    padding: 8px 12px;       /* Menos espaço interno */
-    border-radius: 4px;      /* Bordas levemente menores */
+  #toggle-carimbo .carimbo-text {
+    display: none; /* Some texto no mobile */
+  }
+
+  #toggle-carimbo .carimbo-icon {
+    display: inline; /* Mostra ícone no mobile */
+    font-size: 18px; /* Tamanho do ícone */
+  }
+
+  #toggle-carimbo.botao-three {
+    padding: 10px; /* Botão quadrado e menor */
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
+
 
 
 .botao-three:hover {
