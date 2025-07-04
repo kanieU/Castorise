@@ -104,34 +104,29 @@
   cursor: pointer;
 }
 #toggle-carimbo .carimbo-icon {
-  display: none; /* Ícone escondido no desktop */
+  display: none; /* Esconde ícone no desktop */
 }
 
 @media (max-width: 767px) {
   #toggle-carimbo .carimbo-text {
-    display: none; /* Some texto no mobile */
+    display: none; /* Esconde texto no mobile */
   }
 
   #toggle-carimbo .carimbo-icon {
     display: inline; /* Mostra ícone no mobile */
-    font-size: 18px; /* Tamanho do ícone */
+    font-size: 18px;
   }
 
   #toggle-carimbo.botao-three {
-    padding: 10px; /* Botão quadrado e menor */
+    padding: 10px;
     width: 40px;
     height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  #toggle-carimbo.ativo {
-  background-color: #999; /* cor acinzentada quando ativo */
 }
 
-#toggle-carimbo.ativo:hover {
-  background-color: #777; /* um tom mais escuro se passar o mouse */
-} }
 
 
 
