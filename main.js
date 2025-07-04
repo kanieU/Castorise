@@ -51,22 +51,11 @@ let isDragging = false;
 let lastMouseX = 0;
 let lastMouseY = 0;
 
-document.getElementById('toggle-carimbo').addEventListener('click', () => {
-  editTextureMode = !editTextureMode;
-
-  if (!editTextureMode) {
-    // Quando SAIR do modo teste, volta a girar
-    rotationSpeed = 0.01;
-    if (selectedDecal) {
-      scene.remove(selectedDecal);
-      selectedDecal = null;
-    }
-  }
-
+// ===== BOTÃO CARIMBO CORRIGIDO =====
 const botaoCarimbo = document.getElementById('toggle-carimbo');
 const textoCarimbo = document.querySelector('#toggle-carimbo .carimbo-text');
 
-// Guarde o estado no próprio botão (evita conflito global)
+// Estado inicial
 botaoCarimbo.dataset.ativo = 'false';
 
 botaoCarimbo.addEventListener('click', () => {
@@ -78,20 +67,24 @@ botaoCarimbo.addEventListener('click', () => {
     if (window.innerWidth > 767) {
       textoCarimbo.textContent = 'Ativar Modo Carimbo';
     }
-    // Coloque aqui a lógica de SAIR do modo edição
     editTextureMode = false;
+    rotationSpeed = 0.01;
+    if (selectedDecal) {
+      scene.remove(selectedDecal);
+      selectedDecal = null;
+    }
   } else {
     botaoCarimbo.dataset.ativo = 'true';
     botaoCarimbo.classList.add('ativo');
     if (window.innerWidth > 767) {
       textoCarimbo.textContent = 'Desativar Modo edição';
     }
-    // Coloque aqui a lógica de ENTRAR no modo edição
     editTextureMode = true;
+    rotationSpeed = 0;
   }
 });
 
-
+// ===== CARREGAMENTO DE MODELO =====
 function carregarModelo(url) {
   if (loadedModel) {
     scene.remove(loadedModel);
@@ -253,10 +246,7 @@ function animate() {
   }
 
   if (editTextureMode && loadedModel) {
-    rotationSpeed = 0; // trava rotação imediatamente
-    // travar a rotação em zero ou mantenha o valor atual
-    // Se quiser travar em zero:
-    // loadedModel.rotation.y = 0;
+    rotationSpeed = 0;
   }
 
   controls.update();
