@@ -134,39 +134,21 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
   margin-bottom: 0.5rem; }
 
-/* O original permanece: desktop */
 .texto-animado {
-  position: relative;
-  display: inline-block;
-}
-
-.texto-animado span {
-  position: absolute;
-  opacity: 0;
-  animation: fade 6s linear infinite;
-  color: #F78806;
-}
-
-/* MOBILE: para telas pequenas */
-@media (max-width: 767px) {
-  h1 {
-    text-align: center;
+    display: inline-block;
+    position: relative;
+    width: 200px;
+    height: 1em;
   }
-
-  .texto-animado {
-    display: inline; /* deixa fluir na linha */
-  }
-
+  
   .texto-animado span {
-    position: static; /* volta ao fluxo normal */
-    display: inline; /* não fica absoluto */
-    opacity: 1 !important; /* sempre visível */
-    animation: none; /* desativa a animação ou deixe só um ciclo */
+    position: absolute;
+    opacity: 0;
+    animation: fade 6s linear infinite;
+    color: #F78806;
   }
-}
-
-
-    /* 3 palavras → 6s total → cada uma 2s */
+  
+  /* 3 palavras → 6s total → cada uma 2s */
   .texto-animado span:nth-child(1) {
     animation-delay: 0s;
   }
@@ -185,9 +167,6 @@ h1, h2, h3, h4, h5, h6 {
     100% { opacity: 0; }
   }
   
-
-  
-
 
 p {
   margin-top: 0;
