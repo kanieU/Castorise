@@ -148,8 +148,14 @@
   border-radius: 4px;
   border: 1px solid #ccc;
 }
-
-
+@media (max-width: 767px) {
+  .file-input {
+    width: 100%;
+    max-width: 200px; /* ou o tamanho que quiser */
+    padding: 10px; /* ajuste o padding se quiser */
+    font-size: 16px; /* aumenta o texto dentro do input */
+  }
+}
 
 html {
   font-family: sans-serif;
