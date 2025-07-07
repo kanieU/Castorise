@@ -41,12 +41,6 @@
   box-sizing: border-box; }
 
 /* testando sa porra */
-@media (max-width: 767px) {
-  .js-fullheight {
-    height: auto !important;
-    min-height: 100vh;
-  }
-}
 
 
 /* Padrão: Mobile, alinhado à esquerda */
