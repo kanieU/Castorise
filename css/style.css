@@ -171,6 +171,7 @@
     cursor: pointer;
     position: relative;
     z-index: 10;
+   vertical-align: middle;
   }
 
   .file-label i {
@@ -202,6 +203,22 @@
   height: 48px !important;
   padding: 10px !important;
 }
+.threejs-ui .file-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  width: 48px;
+  height: 48px;
+  background-color: #F78806;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 10px;
+  vertical-align: middle; /* <- ESSENCIAL */
+}
+
 
 
 
