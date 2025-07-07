@@ -147,15 +147,26 @@
   background: white;
   border-radius: 4px;
   border: 1px solid #ccc;
+  display: none;
 }
+/* Esconde o input no mobile */
 @media (max-width: 767px) {
   .file-input {
-    width: 100%;
-    max-width: 200px; /* ou o tamanho que quiser */
-    padding: 10px; /* ajuste o padding se quiser */
-    font-size: 16px; /* aumenta o texto dentro do input */
+    display: none;
+  }
+
+  .file-label {
+    display: inline-block;
+    font-size: 24px;  /* Tamanho do ícone */
+    color: #F78806;   /* Cor do ícone */
+    cursor: pointer;
+    background: white;
+    padding: 10px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
   }
 }
+
 
 html {
   font-family: sans-serif;
