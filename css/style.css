@@ -75,7 +75,7 @@
   #threejs-container {
     width: 100% !important;
     height: auto !important;
-    aspect-ratio: 9/16;
+    aspect-ratio: 3/4;
     max-height: 90vh;
     margin: 0 auto;
   }
