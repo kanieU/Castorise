@@ -4,6 +4,7 @@ cores:
 
 preto 2F2D3B
 laranja F78806
+cor do fundo do three js: ffffff
 
 css adcionados por mim em
 css/style.css
