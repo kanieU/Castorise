@@ -158,16 +158,21 @@
   }
 
   .file-label {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     font-size: 16px;
-    color: #F78806;
+    color: #fff;
+    background: #F78806;
+    padding: 10px;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
-    background: white;
-    padding: 10px 16px;
-    border: 1px solid #ccc;
-    border-radius: 0; /* 100% quadrado */
   }
 }
+
 
 
 
