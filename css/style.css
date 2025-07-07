@@ -179,6 +179,29 @@
   }
 }
 
+/* Aplica o mesmo tamanho e alinhamento a todos os botões da interface three.js */
+.threejs-ui .botao-three,
+.threejs-ui .file-label {
+  width: 48px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  font-size: 18px;
+  background-color: #F78806;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Corrige o botão do lápis, caso tenha regras específicas */
+#toggle-carimbo {
+  width: 48px !important;
+  height: 48px !important;
+  padding: 10px !important;
+}
 
 
 
