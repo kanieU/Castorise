@@ -159,11 +159,11 @@
 
   .file-label {
     display: inline-block;
-    font-size: 24px;
+    font-size: 16px;
     color: #F78806;
     cursor: pointer;
     background: white;
-    padding: 10px;
+    padding: 10px 16px;
     border: 1px solid #ccc;
     border-radius: 0; /* 100% quadrado */
   }
