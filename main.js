@@ -51,11 +51,9 @@ let isDragging = false;
 let lastMouseX = 0;
 let lastMouseY = 0;
 
-// ===== BOTÃO CARIMBO CORRIGIDO =====
 const botaoCarimbo = document.getElementById('toggle-carimbo');
 const textoCarimbo = document.querySelector('#toggle-carimbo .carimbo-text');
 
-// Estado inicial
 botaoCarimbo.dataset.ativo = 'false';
 
 botaoCarimbo.addEventListener('click', () => {
@@ -84,7 +82,6 @@ botaoCarimbo.addEventListener('click', () => {
   }
 });
 
-// ===== CARREGAMENTO DE MODELO =====
 function carregarModelo(url) {
   if (loadedModel) {
     scene.remove(loadedModel);
@@ -109,20 +106,23 @@ function carregarModelo(url) {
     url,
     (gltf) => {
       loadedModel = gltf.scene;
-      scene.add(loadedModel);
 
       const box = new THREE.Box3().setFromObject(loadedModel);
       const size = box.getSize(new THREE.Vector3()).length();
       const center = box.getCenter(new THREE.Vector3());
 
-      loadedModel.position.sub(center);
+      loadedModel.position.x += (loadedModel.position.x - center.x);
+      loadedModel.position.y += (loadedModel.position.y - center.y);
+      loadedModel.position.z += (loadedModel.position.z - center.z);
+
+      scene.add(loadedModel);
 
       const fov = camera.fov * (Math.PI / 180);
       const distance = size / (2 * Math.tan(fov / 2));
-      camera.position.set(center.x, center.y, distance * 1.5);
-      camera.lookAt(center);
 
-      controls.target.copy(center);
+      camera.position.set(0, 0, distance * 1.5);
+      camera.lookAt(0, 0, 0);
+      controls.target.set(0, 0, 0);
       controls.update();
     },
     undefined,
