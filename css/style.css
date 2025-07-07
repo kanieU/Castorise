@@ -147,9 +147,11 @@
   background: white;
   border-radius: 4px;
   border: 1px solid #ccc;
+}
+.file-label {
   display: none;
 }
-/* Esconde o input no mobile */
+
 @media (max-width: 767px) {
   .file-input {
     display: none;
@@ -157,15 +159,16 @@
 
   .file-label {
     display: inline-block;
-    font-size: 24px;  /* Tamanho do ícone */
-    color: #F78806;   /* Cor do ícone */
+    font-size: 24px;
+    color: #F78806;
     cursor: pointer;
     background: white;
     padding: 10px;
-    border-radius: 50%;
     border: 1px solid #ccc;
+    border-radius: 0; /* 100% quadrado */
   }
 }
+
 
 
 html {
