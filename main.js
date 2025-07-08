@@ -62,8 +62,8 @@ botaoCarimbo.addEventListener('click', () => {
   if (isAtivo) {
     botaoCarimbo.dataset.ativo = 'false';
     botaoCarimbo.classList.remove('ativo');
-
-      }
+    if (window.innerWidth > 767) {
+          }
     editTextureMode = false;
     rotationSpeed = 0.01;
     if (selectedDecal) {
@@ -73,7 +73,7 @@ botaoCarimbo.addEventListener('click', () => {
   } else {
     botaoCarimbo.dataset.ativo = 'true';
     botaoCarimbo.classList.add('ativo');
-    
+    if (window.innerWidth > 767) {
     }
     editTextureMode = true;
     rotationSpeed = 0;
