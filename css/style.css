@@ -41,6 +41,11 @@
   box-sizing: border-box; }
 
 /* testando sa porra */
+#services-section .resume-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
 
 
 /* Padrão: Mobile, alinhado à esquerda */
