@@ -41,56 +41,145 @@
   box-sizing: border-box; }
 
 /* testando sa porra */
-.org-chart {
+/* ==========================================================================
+   Ajustes para organograma na seção "Nossa História" (resume-section)
+   ========================================================================== */
+
+#resume-section .container {
+  position: relative;
+  /* espaço extra em cima para comportar o retângulo */
+  padding-top: 40px;
+}
+
+/* RETÂNGULO CENTRAL (texto "NOVO RETANGULO") */
+#resume-section .container::before{
+  content: "NOVO RETANGULO";
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 360px;           /* largura do retângulo */
+  height: 84px;           /* altura do retângulo */
+  background: #7a7a7a;    /* cor do retângulo (ajuste se quiser) */
+  color: #ffffff;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  margin: 60px 0;
-  position: relative;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 13px;
+  border-radius: 4px;
+  z-index: 30;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.3);
+  letter-spacing: 0.6px;
 }
 
-.org-top {
-  background: #333;
-  color: #fff;
-  padding: 15px 30px;
-  border-radius: 8px;
-  font-weight: bold;
-  text-align: center;
-}
-
-.org-connector {
-  width: 2px;
-  height: 40px;
-  background: #fff;
-  position: relative;
-}
-
-.org-connector::after {
+/* LINHA VERTICAL DO RETÂNGULO ATÉ A BARRA HORIZONTAL */
+#resume-section .container::after{
   content: "";
   position: absolute;
-  top: 40px;
-  left: -150px;
-  width: 300px; /* largura horizontal da linha */
-  height: 2px;
-  background: #fff;
+  /* começa logo abaixo do retângulo */
+  top: calc(30px + 84px); /* top do retângulo + altura */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 26px;           /* distância entre retângulo e barra */
+  background: #ffffff;
+  z-index: 25;
+  border-radius: 1px;
 }
 
-.org-bottom {
-  display: flex;
-  justify-content: center;
-  gap: 100px; /* espaço entre os dois blocos */
-  margin-top: 20px;
+/* A linha horizontal (barra) que conecta as duas colunas.
+   Aplica-se à row que contém as duas col-md-6 (é a segunda row dentro do container). */
+#resume-section .container > .row:nth-child(2) {
+  position: relative;
 }
 
-.resume-wrap {
-  background: #222;
-  padding: 20px;
-  border-radius: 10px;
-  color: #fff;
-  width: 300px;
+/* Barra horizontal (colocada centrada sob a linha vertical) */
+#resume-section .container > .row:nth-child(2)::before{
+  content: "";
+  position: absolute;
+  top: calc(30px + 84px + 26px); /* retângulo top + altura + vertical gap */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 560px;          /* comprimento total da barra (ajuste se precisar) */
+  height: 6px;
+  background: #ffffff;
+  border-radius: 4px;
+  z-index: 20;
 }
 
+/* Cada coluna precisa de um conector vertical saindo da barra até o topo do primeiro cartão */
+/* Tornamos as colunas posicionadas para poder criar pseudo-elementos */
+#resume-section .container > .row:nth-child(2) > .col-md-6{
+  position: relative;
+}
 
+/* conector vertical em cada coluna (centro da coluna) */
+#resume-section .container > .row:nth-child(2) > .col-md-6::before{
+  content: "";
+  position: absolute;
+  /* começa logo abaixo da barra */
+  top: calc(30px + 84px + 26px + 4px); /* barra top + pequeno espaçamento */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 40px;          /* comprimento até o topo do primeiro cartão */
+  background: #ffffff;
+  z-index: 20;
+  border-radius: 1px;
+}
+
+/* Pequeno 'cap' horizontal na ponta do conector para conectar visualmente com a barra */
+#resume-section .container > .row:nth-child(2) > .col-md-6::after{
+  content: "";
+  position: absolute;
+  top: calc(30px + 84px + 26px); /* no topo da barra */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 6px;
+  background: #ffffff;
+  border-radius: 3px;
+  z-index: 21;
+}
+
+/* Força uma distância maior entre o topo e o primeiro cartão da coluna,
+   para que os conectores tenham espaço */
+#resume-section .container > .row:nth-child(2) > .col-md-6 .resume-wrap:first-child{
+  margin-top: 180px; /* ajuste este valor se quiser maior/menor distância */
+}
+
+/* Garanta contraste nos cards (se já existirem estilos, estes apenas reforçam) */
+#resume-section .resume-wrap{
+  background: #222; /* mantém tom escuro */
+  color: #e6e6e6;
+  border-radius: 8px;
+  padding: 22px;
+  box-shadow: none;
+}
+
+/* Responsividade: em telas pequenas escondemos as linhas (fica melhor em mobile) */
+@media (max-width: 991px) {
+  /* remover retângulo e linhas para não atrapalhar layout empilhado */
+  #resume-section .container::before,
+  #resume-section .container::after,
+  #resume-section .container > .row:nth-child(2)::before,
+  #resume-section .container > .row:nth-child(2) > .col-md-6::before,
+  #resume-section .container > .row:nth-child(2) > .col-md-6::after{
+    display: none;
+  }
+
+  /* reduz a margem usada para desktop */
+  #resume-section .container > .row:nth-child(2) > .col-md-6 .resume-wrap:first-child{
+    margin-top: 30px;
+  }
+}
+
+/* Pequenos ajustes estéticos (opcionais) */
+#resume-section .texto1 {
+  color: #f6a800; /* mantém a cor de destaque do site */
+  font-weight: 500;
+}
 
 
 /* testando sa porra */
