@@ -43,9 +43,11 @@
 /* testando sa porra */
 /* ================= ORGANOGRAMA ================== */
 
+/* Central card abaixo do título */
 .org-top {
-  position: relative;
-  margin-bottom: 60px;
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: center;
 }
 
 .org-top .resume-wrap.central {
@@ -54,56 +56,22 @@
   border-radius: 10px;
   text-align: center;
   padding: 20px;
-  position: relative;
+  max-width: 400px;
 }
 
-.org-top::after {
-  content: "";
-  position: absolute;
-  bottom: -30px; /* distância até a linha horizontal */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 2px;
-  height: 30px;
-  background: #fff;
-}
-
-/* linha horizontal que conecta as colunas */
-.org-connect {
-  position: relative;
-  margin-top: 30px;
-}
-
-.org-connect::before {
-  content: "";
-  position: absolute;
-  top: -30px; /* conecta na linha vertical */
-  left: 15%;
-  right: 15%;
-  height: 2px;
-  background: #fff;
-}
-
-/* conectores verticais em cada coluna */
-.org-connect > .col-md-6 {
-  position: relative;
-}
-
-.org-connect > .col-md-6::before {
-  content: "";
-  position: absolute;
-  top: -30px; /* parte de cima da coluna */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 2px;
-  height: 30px;
-  background: #fff;
-}
-
-/* estilo extra nos cards */
 .resume-wrap.central h2 {
   font-size: 20px;
   margin-bottom: 10px;
+}
+
+/* Remove qualquer linha ou pseudo-elemento antigo */
+.org-top::after,
+.org-top::before,
+.org-connect::before,
+.org-connect > .col-md-6::before,
+.org-connect > .col-md-6::after {
+  display: none !important;
+  content: none !important;
 }
 
 
